@@ -1,0 +1,18 @@
+@if(this.quizStore.currentQuestionItem(); as item){
+@if(item !== null) {
+
+<div>{{item.question.content}}</div>
+
+<div class="flex flex-wrap gap-2">
+    @for(answer of item.answers; track answer.id){
+    <div class="flex align-items-center">
+        <p-radioButton name="question" [(ngModel)]="currentAnswer" [value]="answer.content"></p-radioButton>
+        <label class="m1-2">{{answer.content}}</label>
+    </div>
+    }
+</div>
+<div><button (click)="next()">Next</button></div>
+}
+}
+
+{{this.quizStore.timer()}}
