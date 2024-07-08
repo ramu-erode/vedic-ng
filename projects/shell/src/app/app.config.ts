@@ -11,7 +11,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     {
       provide: "SERVICE_BASE_URL",
-      useValue: "http://localhost:5000"
+      //useValue: "http://localhost:5000"
+      useValue: "http://vedicmathss.com/vedic-api"
     }
   ],
 

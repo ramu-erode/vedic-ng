@@ -1,4 +1,4 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, effect, inject, signal } from "@angular/core";
 import { QuizStore } from "../services/quiz.store";
 import { ActivatedRoute } from "@angular/router";
 import { tap } from "rxjs";
@@ -24,6 +24,12 @@ export class QuizComponent {
             tap(params => this.quizStore.setQuizId(params["id"])),
             takeUntilDestroyed()
         ).subscribe();
+
+        effect(() => {
+            const answer = this.currentAnswer();
+            if(answer === "") return;
+            this.quizStore.setAnswer(answer);
+        }, {allowSignalWrites: true})
     }
 
     next() {

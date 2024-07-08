@@ -1,13 +1,14 @@
-import { computed, DestroyRef, effect, inject, Injectable, Signal, signal } from "@angular/core";
+import { computed, DestroyRef, effect, inject, Injectable, Signal, signal, untracked } from "@angular/core";
 import { Answer, Question } from "../../models/model";
 import { DataService } from "./data.service";
-import { interval, tap } from "rxjs";
+import { interval, takeWhile, tap } from "rxjs";
 import * as _ from 'lodash';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 export interface QuestionItem {
     question: Question;
     answers: Answer[];
+    givenAnswer?: string;
     startTime: Date;
     endTime: Date;
     isCompleted: boolean;
@@ -39,8 +40,11 @@ export class QuizStore {
 
     #currentTime = signal<Date>(new Date());
     #startTime = signal<Date>(new Date());
+    #completed = signal(false);
+    completed = this.#completed.asReadonly();
 
     timer: Signal<string>;
+
     constructor() {
         effect(() => {
             const id = this.#quizId();
@@ -55,8 +59,11 @@ export class QuizStore {
                 question: question, answers: _.filter(answers, answer => answer.questionId === question.id),
                 startTime: new Date(), endTime: new Date(), isCompleted: false
             }));
-            this.#questionItems.set(result);
-            this.start();
+            untracked(() => {
+                this.#questionItems.set(result);
+                this.start();
+            });
+
         }, { allowSignalWrites: true })
 
         this.timer = computed(() => {
@@ -69,6 +76,7 @@ export class QuizStore {
     }
 
     private loadQuiz(id: number) {
+        console.log("Load quiz is called");
         this.dataService.getQuiz(id).pipe(
             tap(result => {
                 if (result == null) return;
@@ -80,6 +88,7 @@ export class QuizStore {
     }
 
     start() {
+        console.log("Start is called");
         this.#index.set(0);
         if (this.#questionItems().length <= 0) return;
         const qi = this.#questionItems()[0];
@@ -88,22 +97,43 @@ export class QuizStore {
         this.#startTime.set(qi.startTime);
         interval(1000).pipe(
             tap(() => this.#currentTime.set(new Date())),
-            takeUntilDestroyed(this.#destroyRef)
+            takeUntilDestroyed(this.#destroyRef),
+            takeWhile(ev => !this.#completed())
         ).subscribe();
+    }
+
+    setAnswer(content: string) {
+        this.#currentQuestionItem.update(q => q ? ({ ...q, givenAnswer: content }) : null);
+        this.updateCurrentQuestion();
     }
 
     next() {
         this.#index.update(idx => idx + 1);
-        this.#currentQuestionItem.update(val => val ? ({ ...val, endTime: new Date() }) : null)
+        this.#currentQuestionItem.update(val => val ? ({ ...val, endTime: new Date() }) : null);
+        this.updateCurrentQuestion();
         if (this.#index() === this.#questionItems().length) {
             this.complete();
             return;
         }
         this.#currentQuestionItem.set(this.#questionItems()[this.#index()]);
+        this.#currentQuestionItem.update(val => val ? ({ ...val, startTime: new Date() }) : null);
+        this.updateCurrentQuestion();
     }
 
+
+
     complete() {
+        this.#completed.set(true);
 
+    }
 
+    private updateCurrentQuestion() {
+        var cqi = this.currentQuestionItem();
+        this.#questionItems.update(qis => {
+            const index = _.findIndex(qis, qi => qi.question.id === cqi?.question.id);
+            if (cqi === null) return qis;
+            qis[index] = cqi;
+            return [...qis];
+        });
     }
 }
