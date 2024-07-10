@@ -1,1 +1,16 @@
-<router-outlet />
+<header>
+  <div class="logo">
+    <img id="logo" src="logo.png" alt="Vedic Mathematics" />
+    <span>Vedic Mathematics</span>
+  </div>
+  <p-inputSwitch
+      [ngModel]="isDarkMode"
+      (ngModelChange)="toggleLightDark()"
+  />
+</header>
+<div class="main-content">
+  <router-outlet />
+</div>
+<footer>
+  <span>&#64;2024 vedicmathss.com</span>
+</footer>

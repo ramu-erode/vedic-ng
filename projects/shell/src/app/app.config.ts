@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -12,7 +12,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: "SERVICE_BASE_URL",
       //useValue: "http://localhost:5000"
-      useValue: "http://vedicmathss.com/vedic-api"
+      useValue: isDevMode() ? "http://localhost:3000" : "http://vedicmathss.com/vedic-api"
     }
   ],
 

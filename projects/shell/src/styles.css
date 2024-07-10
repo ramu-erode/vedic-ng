@@ -1,5 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 @import "primeflex/primeflex.css";
+
+[data-theme="light"] {
+  --header-footer-bg-color: var(--primary-200);
+}
+
+[data-theme="dark"] {
+  --header-footer-bg-color: var(--primary-900);
+}
+
+
+body {
+  margin: 0;
+}
+
+.p-inputswitch {
+  width: 3rem;
+  height: 1.5rem;
+
+  .p-inputswitch-slider::before {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-top: -0.8rem;
+      left: 0.1rem;
+      background: transparent;
+      font-size: 1.25rem;
+      content: "🌞";
+  }
+}
+
+.p-inputswitch-checked .p-inputswitch-slider::before {
+  content: "🌚";
+  transform: translateX(1.4rem);
+}

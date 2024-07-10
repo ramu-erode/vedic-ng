@@ -1,13 +1,32 @@
-import { Component } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'vedic-shell-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [FormsModule, InputSwitchModule, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'shell';
+  title = 'Vedic Mathematics';
+  #document = inject(DOCUMENT);
+  isDarkMode = false;
+
+  toggleLightDark() {
+    const linkElement = this.#document.getElementById(
+      'app-theme',
+    ) as HTMLLinkElement;
+
+    this.isDarkMode = !linkElement.href.includes('dark')
+
+    linkElement.href = this.isDarkMode ? 'theme-dark.css' : 'theme-light.css';
+    this.#document.body.setAttribute(
+      'data-theme',
+      this.isDarkMode ? 'dark' : 'light'
+    )
+  }
 }
