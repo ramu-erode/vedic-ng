@@ -1,0 +1,110 @@
+{
+  "quizzes": [
+    {
+      "id": 1,
+      "title": "First Test"
+    }
+  ],
+  "quiz": [
+    {
+      "id": 1,
+      "answers": [
+        {
+          "content": "8098",
+          "id": 1,
+          "isCorrect": 0,
+          "questionId": 1
+        },
+        {
+          "content": "9098",
+          "id": 2,
+          "isCorrect": 0,
+          "questionId": 1
+        },
+        {
+          "content": "7998",
+          "id": 3,
+          "isCorrect": 1,
+          "questionId": 1
+        },
+        {
+          "content": "9808",
+          "id": 4,
+          "isCorrect": 0,
+          "questionId": 1
+        },
+        {
+          "content": "9801",
+          "id": 5,
+          "isCorrect": 0,
+          "questionId": 2
+        },
+        {
+          "content": "9201",
+          "id": 6,
+          "isCorrect": 0,
+          "questionId": 2
+        },
+        {
+          "content": "8091",
+          "id": 7,
+          "isCorrect": 1,
+          "questionId": 2
+        },
+        {
+          "content": "8291",
+          "id": 8,
+          "isCorrect": 0,
+          "questionId": 2
+        },
+        {
+          "content": "480 minutes",
+          "id": 9,
+          "isCorrect": 1,
+          "questionId": 3
+        },
+        {
+          "content": "08:00",
+          "id": 10,
+          "isCorrect": 1,
+          "questionId": 3
+        },
+        {
+          "content": "8 hours",
+          "id": 11,
+          "isCorrect": 1,
+          "questionId": 3
+        },
+        {
+          "content": "07:00",
+          "id": 12,
+          "isCorrect": 0,
+          "questionId": 3
+        }
+      ],
+      "questions": [
+        {
+          "content": "93 * 86",
+          "id": 1,
+          "quizId": 1,
+          "sequence": 1,
+          "type": "radio"
+        },
+        {
+          "content": "87 * 93",
+          "id": 2,
+          "quizId": 1,
+          "sequence": 1,
+          "type": "radio"
+        },
+        {
+          "content": "Time addition 3:50 + 4:10",
+          "id": 3,
+          "quizId": 1,
+          "sequence": 1,
+          "type": "check"
+        }
+      ]
+    }
+  ]
+}

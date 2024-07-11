@@ -1,0 +1,15 @@
+@if (currentQuestion) {
+  <div class="options">
+    @for(answer of currentQuestion.answers; track answer.id){
+      <div>
+          <p-checkbox
+              name="question"
+              [binary]="false"
+              [value]="answer.content"
+              [(ngModel)]="currentAnswer"
+          /> 
+          <label class="m1-2">{{answer.content}}</label>
+      </div>
+    }
+  </div>
+}
