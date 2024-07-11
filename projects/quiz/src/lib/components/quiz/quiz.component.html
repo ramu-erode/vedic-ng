@@ -16,21 +16,3 @@
 }
 
 {{this.quizStore.timer()}}
-
-<table>
-    <tr>
-        <th>Question</th>
-        <th>Given answer</th>
-        <th>Start</th>
-        <th>End</th>
-
-    </tr>
-    @for(item of this.quizStore.questionItems(); track item.question.id){
-    <tr>
-        <td>{{item.question.content}}</td>
-        <td>{{item.givenAnswer}}</td>
-        <td>{{item.startTime}}</td>
-        <td>{{item.endTime}}</td>
-    </tr>
-    }
-</table>

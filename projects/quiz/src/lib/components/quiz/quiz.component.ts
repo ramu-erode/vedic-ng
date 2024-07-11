@@ -1,5 +1,5 @@
 import { Component, effect, inject, signal } from "@angular/core";
-import { QuizStore } from "../services/quiz.store";
+import { QuizStore } from "../../services/quiz.store";
 import { ActivatedRoute } from "@angular/router";
 import { tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
