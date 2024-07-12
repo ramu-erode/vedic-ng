@@ -59,10 +59,20 @@ export class QuizStore {
         effect(() => {
             const questions = this.#questions();
             const answers = this.#answers();
-            const result = map(questions, question => ({
-                question: question, answers: filter(answers, answer => answer.questionId === question.id),
-                startTime: new Date(), endTime: new Date(), isCompleted: false, isCorrect: false, correctAnswer: []
-            }));
+            const result = map(questions, question => {
+                const currentQuestionAnswers = filter(answers, answer => answer.questionId === question.id);
+                const correctAnswers = currentQuestionAnswers.filter(ans => ans.isCorrect);
+                return {
+                    question: question,
+                    answers: currentQuestionAnswers,
+                    startTime: new Date(),
+                    endTime: new Date(),
+                    isCompleted: false,
+                    isCorrect: false,
+                    correctAnswer: correctAnswers.length === 1
+                        ? correctAnswers[0].content : correctAnswers.map(ans => ans.content)
+                }
+            });
             untracked(() => {
                 this.#questionItems.set(result);
                 this.start();
@@ -115,8 +125,7 @@ export class QuizStore {
 
     next() {
         this.#index.update(idx => idx + 1);
-
-        this.#currentQuestionItem.update(val => val ? ({ ...val, endTime: new Date() }) : null);
+        this.setEndTime();
         this.updateCurrentQuestion();
 
         if (this.#index() === this.#questionItems().length) {
@@ -131,8 +140,7 @@ export class QuizStore {
 
     previous() {
         this.#index.update(idx => idx - 1);
-
-        this.#currentQuestionItem.update(val => val ? ({ ...val, endTime: new Date() }) : null);
+        this.setEndTime();
         this.updateCurrentQuestion();
 
         if (this.#index() === -1) {
@@ -140,13 +148,12 @@ export class QuizStore {
         }
 
         this.#currentQuestionItem.set(this.#questionItems()[this.#index()]);
-        this.#currentQuestionItem.update(val => val ? ({ ...val, startTime: new Date() }) : null);
+        this.setStartTime();
         this.updateCurrentQuestion();
     }
 
     complete() {
         this.#completed.set(true);
-        this.router.navigate([`${this.router.url}/summary`])
     }
 
     private updateCurrentQuestion() {

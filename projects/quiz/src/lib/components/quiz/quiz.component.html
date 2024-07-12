@@ -1,27 +1,49 @@
-@if(currentQuestion){
-    <div class="header">
-        @if(currentQuestionIndex > -1) {
-            <p>Question {{currentQuestionIndex + 1}}</p>
-        }
-        <p>
-            Time taken: {{quizStore.timer()}}
-        </p>
-    </div>
-    <hr />
-    <div class="question">{{currentQuestion.question.content}}</div>        
-    <div class="options">
-        @for(answer of currentQuestion.answers; track answer.id){
+@if (showSummary()) {
+    @if (questionItems.length > 0) {
         <div>
-            <p-radioButton name="question" [(ngModel)]="currentAnswer" [value]="answer.content"></p-radioButton>
-            <label class="m1-2">{{answer.content}}</label>
+            <quiz-summary [questionItems]="questionItems" />
         </div>
+    }
+} @else {
+    @if(currentQuestion){
+        <div class="header">
+            @if(currentQuestionIndex > -1) {
+                <p>Question {{currentQuestionIndex + 1}}</p>
+            }
+            <p>
+                Time taken: {{quizStore.timer()}}
+            </p>
+        </div>
+        <hr />
+        <div class="question">{{currentQuestion.question.content}}</div>
+    
+        @switch(currentQuestionType) {
+            @case (questionType.SINGLE_ANSWER) {
+                <quiz-multiple-choice-radio
+                    [currentQuestion]="currentQuestion"
+                    (setAnswer)="quizStore.setAnswer($event)"
+                />
+            }
+            @case (questionType.MULTIPLE_ANSWERS) {
+                <quiz-multiple-choice-check
+                    [currentQuestion]="currentQuestion"
+                    (setAnswer)="quizStore.setAnswer($event)"
+                />
+            }
+            @case (questionType.TEXT_BLANK) {
+                <quiz-text-blank
+                    [currentQuestion]="currentQuestion"
+                    (setAnswer)="quizStore.setAnswer($event)"
+                />
+            }
         }
-    </div>
-    <div class="buttons">
-        @if(currentQuestionIndex > 0) {
-            <p-button label="Prev" (click)="previous()" severity="secondary" />
-        }
-        <p-button label="{{isLastQuestion ? 'Complete Quiz' : 'Next'}}" (click)="next()" />
-    </div>
+        
+        <div class="buttons">
+            @if(currentQuestionIndex > 0) {
+                <p-button label="Prev" (click)="previous()" severity="secondary" />
+            }
+            <p-button label="{{isLastQuestion ? 'Complete Quiz' : 'Next'}}" (click)="next()" />
+        </div>
+    }
 }
     

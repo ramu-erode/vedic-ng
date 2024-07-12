@@ -80,6 +80,12 @@
           "id": 12,
           "isCorrect": 0,
           "questionId": 3
+        },
+        {
+          "content": "31",
+          "id": 13,
+          "isCorrect": 1,
+          "questionId": 4
         }
       ],
       "questions": [
@@ -103,6 +109,13 @@
           "quizId": 1,
           "sequence": 1,
           "type": "check"
+        },
+        {
+          "content": "What is the sum of 10.5 + 20.5",
+          "id": 4,
+          "quizId": 1,
+          "sequence": 1,
+          "type": "text"
         }
       ]
     }

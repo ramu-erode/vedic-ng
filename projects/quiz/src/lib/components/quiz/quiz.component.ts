@@ -4,26 +4,35 @@ import { ActivatedRoute } from "@angular/router";
 import findIndex from 'lodash/findIndex';
 import { tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { RadioButtonModule} from 'primeng/radiobutton';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ButtonModule } from 'primeng/button';
+import { QuestionTypes } from "../constants/question-types";
+import { MultipleChoiceCheckboxComponent } from "../multiple-choice-checkbox/multiple-choice-checkbox.component";
+import { MultipleChoiceRadioComponent } from "../multiple-choice-radio/multiple-choice-radio.component";
+import { TextBlankComponent } from "../text-blank/text-blank.component";
+import { QuizSummaryComponent } from "../quiz-summary/quiz-summary.component";
 
 @Component({
     selector: 'vedic-quiz',
     standalone: true,
-    imports: [ButtonModule, CommonModule, FormsModule, ReactiveFormsModule, RadioButtonModule],
+    imports: [
+        ButtonModule, CommonModule, MultipleChoiceRadioComponent,
+        MultipleChoiceCheckboxComponent, QuizSummaryComponent, TextBlankComponent
+    ],
     providers: [QuizStore],
     templateUrl: './quiz.component.html',
-    styleUrl: './quiz.component.css'
+    styleUrl: './quiz.component.css',
 })
 export class QuizComponent {
     quizStore = inject(QuizStore);
     route = inject(ActivatedRoute);
-    currentAnswer = signal("");
+    questionItems: QuestionItem[] = [];
     currentQuestion: QuestionItem | null = null;
     currentQuestionIndex = -1;
     isLastQuestion = false;
+    currentQuestionType: string = '';
+    readonly questionType = QuestionTypes;
+    showSummary = signal(false);
 
     constructor() {
         this.route.params.pipe(
@@ -32,19 +41,20 @@ export class QuizComponent {
         ).subscribe();
 
         effect(() => {
-            const answer = this.currentAnswer();
-            if(answer === "") return;
-            this.quizStore.setAnswer(answer);
-        }, {allowSignalWrites: true})
-
-        effect(() => {
-            let questionItems = this.quizStore.questionItems();
+            this.questionItems = this.quizStore.questionItems() || [];
             this.currentQuestion = this.quizStore.currentQuestionItem();
-            this.currentQuestionIndex = findIndex(questionItems, questionItem => {
+            this.currentQuestionType = this.currentQuestion?.question?.type || '';
+            this.currentQuestionIndex = findIndex(this.questionItems, questionItem => {
                 return questionItem?.question?.id === this.currentQuestion?.question?.id
             })
-            this.isLastQuestion = this.currentQuestionIndex === questionItems.length - 1
-        }, {allowSignalWrites: true})
+            this.isLastQuestion = this.currentQuestionIndex === this.questionItems.length - 1
+        }, { allowSignalWrites: true })
+
+        effect(() => {
+            if (this.quizStore.completed()) {
+                this.showSummary.set(true);
+            }
+        }, { allowSignalWrites: true })
     }
 
     next() {
