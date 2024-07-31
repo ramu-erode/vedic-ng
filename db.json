@@ -2,7 +2,18 @@
   "quizzes": [
     {
       "id": 1,
-      "title": "First Test"
+      "title": "First Test",
+      "type": "quiz"
+    },
+    {
+      "id": 2,
+      "tableOfNumber": 27,
+      "type": "dodging table"
+    },
+    {
+      "id": 2,
+      "tableOfNumber": 185,
+      "type": "dodging table"
     }
   ],
   "quiz": [

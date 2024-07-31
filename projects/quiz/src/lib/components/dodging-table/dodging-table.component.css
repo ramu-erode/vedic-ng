@@ -1,0 +1,61 @@
+p {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+label {
+  margin-right: 8px;
+}
+
+.multiplier {
+  width: 75px;
+}
+
+.multiplier.first {
+  margin-right: 24px;
+}
+
+.error {
+  color: var(--red-400);
+}
+
+.controls {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: row;
+  min-width: 50vw;
+
+  div {
+    flex: 1;
+  }
+}
+
+.buttons {
+  margin-top: 24px;
+  margin-bottom: 64px;
+
+  p-button:first-child {
+    margin-right: 16px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .controls {
+    flex-direction: column;
+  }
+
+  .controls div:first-child {
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: inline-block;
+    width: 110px;
+  }
+}

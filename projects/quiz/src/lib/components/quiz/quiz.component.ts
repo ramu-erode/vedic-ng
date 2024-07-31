@@ -6,7 +6,7 @@ import { tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CommonModule } from "@angular/common";
 import { ButtonModule } from 'primeng/button';
-import { QuestionTypes } from "../constants/question-types";
+import { QuestionTypes } from "../../constants/question-types";
 import { MultipleChoiceCheckboxComponent } from "../multiple-choice-checkbox/multiple-choice-checkbox.component";
 import { MultipleChoiceRadioComponent } from "../multiple-choice-radio/multiple-choice-radio.component";
 import { TextBlankComponent } from "../text-blank/text-blank.component";

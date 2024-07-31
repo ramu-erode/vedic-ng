@@ -1,0 +1,22 @@
+<p-table [value]="quizzes()" [tableStyle]="{'max-width': '60rem'}">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Title</th>
+            <th>Action</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-quiz>
+        <tr>
+            @switch(quiz.type) {
+                @case (activityTypes.QUIZ) {
+                    <td>{{ quiz.title }}</td>
+                    <td><a href="/quiz/{{quiz.id}}">Take</a></td>
+                }
+                @case (activityTypes.DODGING_TABLE) {
+                    <td>Table of {{ quiz.tableOfNumber }}</td>
+                    <td><a href="/table/{{quiz.tableOfNumber}}">Take</a></td>
+                }
+            }
+        </tr>
+    </ng-template>
+</p-table>

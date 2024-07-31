@@ -3,18 +3,20 @@ import { RouterOutlet } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DataService } from '../../services/data.service';
 import { Quiz } from '../../../models/model';
+import { ActivityTypes } from '../../constants/activity-types';
 import { tap } from 'rxjs';
 
 @Component({
-    selector: 'vedic-quiz-list',
+    selector: 'vedic-activity-list',
     standalone: true,
     imports: [RouterOutlet, TableModule],
-    templateUrl: './quiz-list.component.html'
+    templateUrl: './activity-list.component.html'
 })
 export class QuizListComponent implements OnInit{
     dataService = inject(DataService);
 
     quizzes = signal<Quiz[]>([]);
+    readonly activityTypes = ActivityTypes;
 
     ngOnInit() {
         this.dataService.getQuizzes().pipe(

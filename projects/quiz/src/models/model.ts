@@ -16,3 +16,9 @@ export interface Answer {
     content: string;
     isCorrect: boolean;
 }
+
+export interface DodgingTableRow {
+    label: string;
+    intermediates: Array<{ rowId: string, columnId: string, value: number }>;
+    answer: number
+}

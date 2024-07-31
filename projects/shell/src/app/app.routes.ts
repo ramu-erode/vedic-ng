@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { QuizListComponent } from '@vedic/quiz';
+import { QuizListComponent, TableComponent } from '@vedic/quiz';
 import { QuizComponent } from '@vedic/quiz';
 
 export const routes: Routes = [
@@ -8,5 +8,8 @@ export const routes: Routes = [
     },
     {
         path: 'quiz/:id', component: QuizComponent
+    },
+    {
+        path: 'table/:tableOfNumber', component: TableComponent
     }
 ];
