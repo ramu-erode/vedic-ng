@@ -13,7 +13,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 export class MultipleChoiceRadioComponent {
   @Input() currentQuestion: QuestionItem | null = null;
   @Output() setAnswer = new EventEmitter();
-  currentAnswer = signal("");
+  currentAnswer = signal<string>("");
 
   constructor () {
     effect(() => {
@@ -21,5 +21,11 @@ export class MultipleChoiceRadioComponent {
         if (answer === "") return;
         this.setAnswer.emit(answer);
     }, { allowSignalWrites: true })
+  }
+
+  ngOnChanges () {
+    if (!this.currentQuestion?.givenAnswer) return
+
+    this.currentAnswer.set(this.currentQuestion.givenAnswer as string);
   }
 }

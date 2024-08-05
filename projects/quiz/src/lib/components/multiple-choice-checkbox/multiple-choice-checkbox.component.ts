@@ -22,4 +22,10 @@ export class MultipleChoiceCheckboxComponent {
         this.setAnswer.emit(answer);
     }, { allowSignalWrites: true })
   }
+
+  ngOnChanges () {
+    if (!this.currentQuestion?.givenAnswer?.length) return
+
+    this.currentAnswer.set(this.currentQuestion.givenAnswer as Array<string>);
+  }
 }

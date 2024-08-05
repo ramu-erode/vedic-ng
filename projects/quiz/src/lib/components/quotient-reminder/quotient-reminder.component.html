@@ -1,1 +1,12 @@
-<p>quotient-reminder works!</p>
+@if (currentQuestion?.question) {
+  <div>
+    <div>
+      <label for="quotient">Quotient</label>
+      <input type="text" pInputText id="quotient" [(ngModel)]="quotient" />
+    </div>
+    <div>
+      <label for="reminder">Reminder</label>
+      <input type="text" pInputText id="reminder" [(ngModel)]="reminder" />
+    </div>
+  </div>
+}

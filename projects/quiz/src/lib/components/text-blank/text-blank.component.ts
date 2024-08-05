@@ -23,4 +23,10 @@ export class TextBlankComponent {
         this.setAnswer.emit(answer);
     }, { allowSignalWrites: true })
   }
+
+  ngOnChanges () {
+    if (!this.currentQuestion?.givenAnswer) return
+
+    this.currentAnswer.set(this.currentQuestion.givenAnswer as string);
+  }
 }
