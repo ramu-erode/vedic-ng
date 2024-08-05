@@ -5,7 +5,7 @@
         </div>
     }
 } @else {
-    @if(currentQuestion){
+    @if(currentQuestion()){
         <div class="header">
             @if(currentQuestionIndex > -1) {
                 <p>Question {{currentQuestionIndex + 1}}</p>
@@ -15,24 +15,30 @@
             </p>
         </div>
         <hr />
-        <div class="question">{{currentQuestion.question.content}}</div>
+        <div class="question">{{currentQuestion()?.question?.content}}</div>
     
         @switch(currentQuestionType) {
             @case (questionType.SINGLE_ANSWER) {
                 <quiz-multiple-choice-radio
-                    [currentQuestion]="currentQuestion"
+                    [currentQuestion]="currentQuestion()"
                     (setAnswer)="quizStore.setAnswer($event)"
                 />
             }
             @case (questionType.MULTIPLE_ANSWERS) {
                 <quiz-multiple-choice-check
-                    [currentQuestion]="currentQuestion"
+                    [currentQuestion]="currentQuestion()"
                     (setAnswer)="quizStore.setAnswer($event)"
                 />
             }
             @case (questionType.TEXT_BLANK) {
                 <quiz-text-blank
-                    [currentQuestion]="currentQuestion"
+                    [currentQuestion]="currentQuestion()"
+                    (setAnswer)="quizStore.setAnswer($event)"
+                />
+            }
+            @case (questionType.QUOTIENT_REMINDER) {
+                <quiz-quotient-reminder
+                    [currentQuestion]="currentQuestion()"
                     (setAnswer)="quizStore.setAnswer($event)"
                 />
             }

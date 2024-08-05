@@ -97,6 +97,12 @@
           "id": 13,
           "isCorrect": 1,
           "questionId": 4
+        },
+        {
+          "content": ["4", "1"],
+          "id": 14,
+          "isCorrect": 1,
+          "questionId": 5
         }
       ],
       "questions": [
@@ -127,6 +133,13 @@
           "quizId": 1,
           "sequence": 1,
           "type": "text"
+        },
+        {
+          "content": "Write down the quotient and reminder for 29/7",
+          "id": 5,
+          "quizId": 1,
+          "sequence": 1,
+          "type": "quotient reminder"
         }
       ]
     }

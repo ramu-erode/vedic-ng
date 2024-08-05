@@ -7,7 +7,7 @@ export interface Question {
     id: number;
     quizId: number;
     content: string;
-    type: string;
+    type: string
 }
 
 export interface Answer {

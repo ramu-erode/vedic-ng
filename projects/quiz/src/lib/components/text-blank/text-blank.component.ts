@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, effect, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { QuestionItem } from '../../services/quiz.store';
@@ -6,14 +7,14 @@ import { QuestionItem } from '../../services/quiz.store';
 @Component({
   selector: 'quiz-text-blank',
   standalone: true,
-  imports: [InputTextModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, InputTextModule, FormsModule, ReactiveFormsModule],
   templateUrl: './text-blank.component.html',
   styleUrl: './text-blank.component.css'
 })
 export class TextBlankComponent {
   @Input() currentQuestion: QuestionItem | null = null;
   @Output() setAnswer = new EventEmitter();
-  currentAnswer = signal("");
+  currentAnswer = signal<string>("");
 
   constructor () {
     effect(() => {
