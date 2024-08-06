@@ -1,6 +1,6 @@
 import { Component, Input, effect } from '@angular/core';
 import { TableModule } from 'primeng/table';
-import { QuestionItem } from "../../services/quiz.store";
+import { QuestionItem, QuizResult } from "../../services/quiz.store";
 
 @Component({
   selector: 'quiz-summary',
@@ -12,6 +12,7 @@ import { QuestionItem } from "../../services/quiz.store";
 
 export class QuizSummaryComponent {
   @Input() questionItems: QuestionItem[] = [];
+  @Input() finalResult: QuizResult = {};
 
   constructor () {
   }

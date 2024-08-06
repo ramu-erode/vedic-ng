@@ -6,6 +6,7 @@ import map from 'lodash/map';
 import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { getTimeTaken } from "../utilities/datetime";
 
 export interface QuestionItem {
     question: Question;
@@ -16,6 +17,17 @@ export interface QuestionItem {
     isCompleted: boolean;
     isCorrect: boolean;
     correctAnswer: string | Array<string>;
+    timeTaken?: string;
+    timeTakenInMs?: number;
+}
+
+export interface QuizResult {
+    numberOfQuestions?: number;
+    correctAnswers?: number;
+    totalScore?: string;
+    startTime?: Date;
+    endTime?: Date;
+    timeTaken?: string;
 }
 
 @Injectable()
@@ -46,6 +58,9 @@ export class QuizStore {
     #startTime = signal<Date>(new Date());
     #completed = signal(false);
     completed = this.#completed.asReadonly();
+
+    #finalResult = signal<QuizResult | null>(null);
+    finalResult = this.#finalResult.asReadonly();
 
     timer: Signal<string>;
 
@@ -108,6 +123,7 @@ export class QuizStore {
         qi.startTime = new Date();
         this.#currentQuestionItem.set(qi);
         this.#startTime.set(qi.startTime);
+        this.#finalResult.set({ startTime: qi.startTime });
         interval(1000).pipe(
             tap(() => this.#currentTime.set(new Date())),
             takeUntilDestroyed(this.#destroyRef),
@@ -130,6 +146,7 @@ export class QuizStore {
 
         if (this.#index() === this.#questionItems().length) {
             this.complete();
+            this.updateFinalResult();
             return;
         }
 
@@ -166,18 +183,33 @@ export class QuizStore {
         });
     }
 
+    private updateFinalResult() {
+        let correctAnswers = this.#questionItems()?.filter(question => question.isCorrect).length;
+        let numberOfQuestions = this.#questionItems()?.length;
+        let startTime = this.#finalResult()?.startTime?.getTime() || 0;
+        let endTime = this.#currentQuestionItem()?.endTime?.getTime() || 0;
+        this.#finalResult.update(value => ({
+            ...value,
+            endTime: this.#currentQuestionItem()?.endTime,
+            numberOfQuestions,
+            correctAnswers,
+            totalScore: `${correctAnswers}/${numberOfQuestions}`,
+            timeTaken: getTimeTaken(endTime - startTime)
+        }));
+    }
+
     private setEndTime () {
         let question = this.#currentQuestionItem();
         if (!question) return;
 
         let endTime = new Date();
-        let timeTakenInSeconds = Math.ceil((endTime.getTime() - question.startTime.getTime()) / 1000);
-        let minutesTaken = Math.floor(timeTakenInSeconds / 60);
-        let secondsTaken = timeTakenInSeconds % 60;
+        let totalTimeTaken = question?.timeTakenInMs || 0;
+        let timeTakenInMs = totalTimeTaken + (endTime.getTime() - question.startTime.getTime());
         this.#currentQuestionItem.update(val => (val ? {
             ...val,
             endTime,
-            timeTaken: `${minutesTaken ? minutesTaken + ' min' : ''}${secondsTaken} sec`
+            timeTakenInMs,
+            timeTaken: getTimeTaken(timeTakenInMs)
         } : null));
     }
 

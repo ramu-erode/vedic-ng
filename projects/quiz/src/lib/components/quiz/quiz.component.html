@@ -1,7 +1,7 @@
 @if (showSummary()) {
     @if (questionItems.length > 0) {
         <div>
-            <quiz-summary [questionItems]="questionItems" />
+            <quiz-summary [questionItems]="questionItems" [finalResult]="finalResult" />
         </div>
     }
 } @else {

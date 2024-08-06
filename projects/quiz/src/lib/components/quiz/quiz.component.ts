@@ -1,5 +1,5 @@
 import { Component, effect, inject, signal } from "@angular/core";
-import { QuestionItem, QuizStore } from "../../services/quiz.store";
+import { QuestionItem, QuizResult, QuizStore } from "../../services/quiz.store";
 import { ActivatedRoute } from "@angular/router";
 import findIndex from 'lodash/findIndex';
 import { tap } from "rxjs";
@@ -29,6 +29,7 @@ export class QuizComponent {
     quizStore = inject(QuizStore);
     route = inject(ActivatedRoute);
     questionItems: QuestionItem[] = [];
+    finalResult: QuizResult = {};
     currentQuestion = signal<QuestionItem | null>(null);
     currentQuestionIndex = -1;
     isLastQuestion = false;
@@ -44,6 +45,7 @@ export class QuizComponent {
 
         effect(() => {
             this.questionItems = this.quizStore.questionItems() || [];
+            this.finalResult = this.quizStore.finalResult() || {};
             this.currentQuestion.set(this.quizStore.currentQuestionItem());
             this.currentQuestionType = this.currentQuestion()?.question?.type || '';
             this.currentQuestionIndex = findIndex(this.questionItems, questionItem => {

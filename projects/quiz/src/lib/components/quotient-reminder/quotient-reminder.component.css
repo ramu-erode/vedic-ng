@@ -1,0 +1,10 @@
+.row {
+  label {
+    width: 76px;
+    display: inline-block;
+  }
+}
+
+.row:first-child {
+  margin-bottom: 16px;
+}
