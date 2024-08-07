@@ -131,7 +131,7 @@ export class QuizStore {
         ).subscribe();
     }
 
-    setAnswer(content: string) {
+    setAnswer(content: string | Array<string>) {
         const isCorrect = this.isCorrectAnswer(content) || false;
         this.#currentQuestionItem.update(
             q => q ? ({ ...q, givenAnswer: content, isCompleted: true, isCorrect }) : null
@@ -171,6 +171,19 @@ export class QuizStore {
 
     complete() {
         this.#completed.set(true);
+    }
+
+    setCurrentQuestion(questionId: number) {
+        this.setEndTime();
+        this.updateCurrentQuestion();
+
+        let questionIndex = this.#questionItems().findIndex(questionItem => {
+            return questionItem?.question?.id === questionId
+        });
+        this.#index.set(questionIndex);
+        this.#currentQuestionItem.set(this.#questionItems()[this.#index()]);
+        this.setStartTime();
+        this.updateCurrentQuestion();
     }
 
     private updateCurrentQuestion() {

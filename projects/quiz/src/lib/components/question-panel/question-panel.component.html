@@ -1,0 +1,26 @@
+<div>
+  <div class="large-screen-content">
+    <h4>Jump to question</h4>
+    <side-panel-questions
+      [questions]="questions"
+      [currentQuestionId]="currentQuestionId"
+      (setCurrentQuestion)="setCurrentQuestionInStore($event)"
+    />
+  </div>
+  <p-sidebar [(visible)]="sidebarVisible" position="right">
+    <ng-template pTemplate="header">
+      <span class="font-semibold text-xl">Jump to question</span>
+    </ng-template>
+    <side-panel-questions
+      [questions]="questions"
+      [currentQuestionId]="currentQuestionId"
+      (setCurrentQuestion)="setCurrentQuestionInStore($event)"
+    />
+  </p-sidebar>
+  <p-button 
+    type="button" 
+    class="mr-2" 
+    (onClick)="sidebarVisible.set(true)" 
+    icon="pi pi-arrow-left"
+  />
+</div>

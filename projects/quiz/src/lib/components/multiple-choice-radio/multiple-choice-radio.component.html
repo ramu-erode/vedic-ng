@@ -3,7 +3,7 @@
     @for(answer of currentQuestion.answers; track answer.id){
       <div>
           <p-radioButton name="question" [(ngModel)]="currentAnswer" [value]="answer.content"></p-radioButton>
-          <label class="m1-2">{{answer.content}}</label>
+          <label class="ml-2">{{answer.content}}</label>
       </div>
     }
   </div>

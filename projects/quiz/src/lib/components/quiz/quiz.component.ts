@@ -12,6 +12,7 @@ import { MultipleChoiceRadioComponent } from "../multiple-choice-radio/multiple-
 import { TextBlankComponent } from "../text-blank/text-blank.component";
 import { QuizSummaryComponent } from "../quiz-summary/quiz-summary.component";
 import { QuotientReminderComponent } from "../quotient-reminder/quotient-reminder.component";
+import { QuestionPanelComponent } from "../question-panel/question-panel.component";
 
 @Component({
     selector: 'vedic-quiz',
@@ -19,7 +20,8 @@ import { QuotientReminderComponent } from "../quotient-reminder/quotient-reminde
     imports: [
     ButtonModule, CommonModule, MultipleChoiceRadioComponent,
     MultipleChoiceCheckboxComponent, QuizSummaryComponent, TextBlankComponent,
-    QuotientReminderComponent
+    QuotientReminderComponent,
+    QuestionPanelComponent
 ],
     providers: [QuizStore],
     templateUrl: './quiz.component.html',

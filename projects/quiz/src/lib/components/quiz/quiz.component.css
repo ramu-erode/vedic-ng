@@ -1,3 +1,22 @@
+:host {
+  width: 100%;
+}
+
+.main {
+  display: flex;
+}
+
+.main > div:first-child {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.quiz-container {
+  display: flex;
+  flex-direction: column;  
+}
+
 .header {
   display: flex;
 
@@ -19,6 +38,7 @@
 hr {
   margin-block-start: 24px;
   margin-block-end: 24px;
+  width: 100%;
 }
 
 .question {

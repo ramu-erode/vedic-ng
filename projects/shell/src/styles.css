@@ -2,13 +2,16 @@
 
 @import "primeng/resources/primeng.css";
 @import "primeflex/primeflex.css";
+@import "primeicons/primeicons.css";
 
 [data-theme="light"] {
   --header-footer-bg-color: var(--primary-200);
+  --question-panel-bg-color: var(--primary-50);
 }
 
 [data-theme="dark"] {
   --header-footer-bg-color: var(--primary-900);
+  --question-panel-bg-color: var(--surface-d);
 }
 
 

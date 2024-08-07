@@ -1,3 +1,9 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .title {
   margin-bottom: 8px;
   font-size: 32px;
@@ -19,6 +25,6 @@
   }
 
   p:first-child {
-    flex: 1;
+    margin-right: 64px;
   }
 }
