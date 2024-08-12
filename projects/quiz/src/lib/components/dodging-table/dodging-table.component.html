@@ -4,17 +4,18 @@
     <div>
       <label for="startMultiplier">Start Multiplier</label>
       <p-inputNumber
-        class="multiplier first" inputId="startMultiplier"
+        class="multiplier first" inputId="startMultiplier" readonly
         [(ngModel)]="startMultiplier" [inputStyle]="{width: '100px'}"
       />
     </div>
     <div>
       <label for="endMultiplier">End Multiplier</label>
       <p-inputNumber
-        class="multiplier" inputId="endMultiplier"
+        class="multiplier" inputId="endMultiplier" readonly
         [(ngModel)]="endMultiplier" [inputStyle]="{width: '100px'}"
       />
     </div>
+    <p>Time taken: {{quizStore.timer()}}</p>
   </div>
   @if (startMultiplier() < endMultiplier()) {
     <p-table [value]="tableValues()">
@@ -29,15 +30,29 @@
         <tr>
           <td>{{row.label}}</td>
           <td *ngFor="let intermediate of row.intermediates">
-            <p-inputNumber [(ngModel)]="intermediate.value" [inputStyle]="{width: '100px'}" />
+            <div class="readonly-cell" *ngIf="has(row, 'isCorrect'); else elseBlock">
+              <p>{{intermediate.value}}</p>
+              <span class="status">{{intermediate.isCorrect ? '✅' : '❌'}}</span>
+            </div>
+            <ng-template #elseBlock>
+              <p-inputNumber [(ngModel)]="intermediate.value" [inputStyle]="{width: '100px'}" />
+            </ng-template>
           </td>
-          <td><p-inputNumber [(ngModel)]="row.answer" [inputStyle]="{width: '100px'}" /></td>
+          <td>
+            <div class="readonly-cell" *ngIf="has(row, 'isCorrect'); else elseBlock">
+              <p>{{row.answer}}</p>
+              <span class="status">{{row.isCorrect ? '✅' : '❌'}}</span>
+            </div>
+            <ng-template #elseBlock>
+              <p-inputNumber [(ngModel)]="row.answer" [inputStyle]="{width: '100px'}" />
+            </ng-template>
+          </td>
         </tr>
       </ng-template>
     </p-table>
     <div class="buttons">
       <p-button label="Reset" (click)="resetValues()" severity="secondary" />
-      <p-button label="Submit" (click)="submitValues()" />
+      <p-button *ngIf="showSubmit()" label="Submit" (click)="submitValues()" />
     </div>
   } @else {
     <p class="error">Enter valid start and end values</p>

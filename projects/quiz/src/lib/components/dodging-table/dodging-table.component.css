@@ -34,6 +34,10 @@ label {
   div {
     flex: 1;
   }
+
+  p {
+    padding-top: 12px;
+  }
 }
 
 .buttons {
@@ -42,6 +46,24 @@ label {
 
   p-button:first-child {
     margin-right: 16px;
+  }
+}
+
+p-table {
+  max-width: 90vw;
+}
+
+.status {
+  margin-left: 8px;
+}
+
+.readonly-cell {
+  display: flex;
+  align-items: center;
+
+  p {
+    min-width: 35px;
+    text-align: center;
   }
 }
 
@@ -57,5 +79,9 @@ label {
   label {
     display: inline-block;
     width: 110px;
+  }
+
+  p-table {
+    display: inline-block;
   }
 }

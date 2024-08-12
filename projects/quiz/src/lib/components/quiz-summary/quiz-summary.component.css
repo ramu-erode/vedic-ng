@@ -28,3 +28,13 @@
     margin-right: 64px;
   }
 }
+
+p-table {
+    max-width: 90vw;
+}
+
+@media screen and (max-width: 576px) {
+  .summary {
+    flex-direction: column;
+  }
+}

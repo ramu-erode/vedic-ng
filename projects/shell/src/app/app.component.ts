@@ -16,6 +16,10 @@ export class AppComponent {
   #document = inject(DOCUMENT);
   isDarkMode = false;
 
+  constructor() {
+
+  }
+
   toggleLightDark() {
     const linkElement = this.#document.getElementById(
       'app-theme',
@@ -28,5 +32,9 @@ export class AppComponent {
       'data-theme',
       this.isDarkMode ? 'dark' : 'light'
     )
+  }
+
+  gotoHome() {
+    window.location.href = `${window.location.origin}/quizzes`
   }
 }

@@ -115,6 +115,18 @@ export class QuizStore {
         ).subscribe();
     }
 
+    startTimer() {
+        this.#completed.set(false);
+        let current = new Date();
+        this.#startTime.set(current);
+        this.#currentTime.set(current);
+        interval(1000).pipe(
+            tap(() => this.#currentTime.set(new Date())),
+            takeUntilDestroyed(this.#destroyRef),
+            takeWhile(ev => !this.#completed())
+        ).subscribe();
+    }
+
     start() {
         console.log("Start is called");
         this.#index.set(0);
@@ -124,11 +136,7 @@ export class QuizStore {
         this.#currentQuestionItem.set(qi);
         this.#startTime.set(qi.startTime);
         this.#finalResult.set({ startTime: qi.startTime });
-        interval(1000).pipe(
-            tap(() => this.#currentTime.set(new Date())),
-            takeUntilDestroyed(this.#destroyRef),
-            takeWhile(ev => !this.#completed())
-        ).subscribe();
+        this.startTimer();
     }
 
     setAnswer(content: string | Array<string>) {
