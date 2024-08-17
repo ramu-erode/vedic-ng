@@ -22,3 +22,10 @@ export interface DodgingTableRow {
     intermediates: Array<{ rowId: string, columnId: string, value: number }>;
     answer: number
 }
+
+export interface Profile {
+    id: number;
+    name: string;
+    whats_app_no: string,
+    role_id: number
+}

@@ -14,6 +14,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: "SERVICE_BASE_URL",
       useValue: isDevMode() ? "http://localhost:3000" : "http://vedicmathss.com/vedic-api"
+    },
+    {
+      provide: "FASTAPI_BASE_URL",
+      useValue: "http://127.0.0.1:8000"
     }
   ],
 

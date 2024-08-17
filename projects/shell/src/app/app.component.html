@@ -3,10 +3,16 @@
     <img id="logo" src="logo.png" alt="Vedic Mathematics" (click)="gotoHome()" />
     <span>Vedic Mathematics</span>
   </div>
-  <p-inputSwitch
+  <div>
+    <p-inputSwitch
       [ngModel]="isDarkMode"
       (ngModelChange)="toggleLightDark()"
-  />
+    />
+    <div class="card flex justify-content-center ml-2">
+      <p-menu #menu [model]="userMenu" [popup]="true" />
+      <p-button (onClick)="menu.toggle($event)" icon="pi pi-user" [rounded]="true" />
+  </div>
+  </div>
 </header>
 <div class="main-content">
   <router-outlet />
