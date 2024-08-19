@@ -1,7 +1,7 @@
 import { computed, DestroyRef, effect, inject, Injectable, Signal, signal, untracked } from "@angular/core";
 import { Answer, Question } from "../../models/model";
 import { DataService } from "./data.service";
-import { interval, takeWhile, tap } from "rxjs";
+import { catchError, interval, takeWhile, tap } from "rxjs";
 import map from 'lodash/map';
 import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
@@ -32,7 +32,6 @@ export interface QuizResult {
 
 @Injectable()
 export class QuizStore {
-    dataService = inject(DataService);
     #destroyRef = inject(DestroyRef);
 
     #quizId = signal(0);
@@ -64,7 +63,7 @@ export class QuizStore {
 
     timer: Signal<string>;
 
-    constructor() {
+    constructor(private dataService: DataService) {
         effect(() => {
             const id = this.#quizId();
             if (id === 0) return;
@@ -110,6 +109,10 @@ export class QuizStore {
                 if (result == null) return;
                 this.#questions.set(result.questions);
                 this.#answers.set(result.answers);
+            }),
+            catchError(error => {
+                console.error('Error in getQuiz: ', error.message);
+                throw error;
             }),
             takeUntilDestroyed(this.#destroyRef)
         ).subscribe();

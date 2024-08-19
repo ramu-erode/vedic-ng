@@ -1,0 +1,11 @@
+:host {
+  width: 100%;
+  display: flex;
+}
+
+.content {
+  padding-left: 32px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}

@@ -29,3 +29,29 @@ export interface Profile {
     whats_app_no: string,
     role_id: number
 }
+
+export interface Student {
+    id: number;
+    profile_id: number;
+    name: string;
+    date_of_birth: Date;
+    class: string;
+    class_in_year: string;
+    is_active: boolean;
+}
+
+export interface Topic {
+    id: number;
+    course_id: number;
+    name: string;
+    sequence: number;
+}
+
+export interface Worksheet {
+    id: number;
+    topic_id: number;
+    name: string;
+    type: string;
+    table_of: string;
+    is_practice: boolean;
+}

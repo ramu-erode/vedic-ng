@@ -1,13 +1,12 @@
 import { DestroyRef, effect, inject, Injectable, signal } from "@angular/core";
 import { DataService } from "./data.service";
-import { tap } from "rxjs";
+import { catchError, tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Profile } from "../../models/model";
+import { Profile, Student } from "../../models/model";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 
 export class UserStore {
-  dataService = inject(DataService);
   #destroyRef = inject(DestroyRef);
   whatsappNumber = "+919840004466";
   #user = signal<Profile | null>(null);
@@ -16,11 +15,21 @@ export class UserStore {
   #isAdmin = signal<boolean>(false);
   isAdmin = this.#isAdmin.asReadonly();
 
-  constructor() {
+  #students = signal<Student[] | null>(null);
+  students = this.#students.asReadonly();
+
+  #currentStudent = signal<Student | null>(null);
+  currentStudent = this.#currentStudent.asReadonly();
+
+  constructor(private dataService: DataService) {
     this.dataService.getUserProfile(this.whatsappNumber).pipe(
       tap(result => {
-          if (result == null) return;
-          this.#user.set(result);
+        if (!result?.length) return;
+        this.#user.set(JSON.parse(result[0]) as Profile);
+      }),
+      catchError(error => {
+        console.error('Error in getUserProfile: ', error.message);
+        throw error;
       }),
       takeUntilDestroyed(this.#destroyRef)
     ).subscribe();

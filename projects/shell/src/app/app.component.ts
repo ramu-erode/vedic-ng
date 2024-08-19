@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
@@ -23,7 +23,7 @@ export class AppComponent {
   isDarkMode = false;
   userMenu: MenuItem[] | undefined;
 
-  constructor() {
+  constructor(private router: Router) {
     effect(() => {
       if (!this.userStore.user()) return;
 
@@ -36,7 +36,7 @@ export class AppComponent {
                       label: 'Admin Dashboard',
                       path: '/admin-dashboard',
                       command: () => {
-                        window.location.href = `${window.location.origin}/admin-dashboard`;
+                        this.router.navigate(['/admin-dashboard']);
                       }
                     }]
                   : []
@@ -63,6 +63,6 @@ export class AppComponent {
   }
 
   gotoHome() {
-    window.location.href = window.location.origin
+    this.router.navigate(['/']);
   }
 }

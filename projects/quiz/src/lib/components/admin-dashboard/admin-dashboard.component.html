@@ -1,1 +1,12 @@
-<p>Is admin user</p>
+<div class="card flex">
+  <p-menu [model]="adminTabs" />
+</div>
+@if (selectedMenu()) {
+  <div id="content" class="content">
+    @switch (selectedMenu()!.label) {
+      @case ('Create Worksheet') {
+        <create-worksheet />
+      }
+    }
+  </div>
+}

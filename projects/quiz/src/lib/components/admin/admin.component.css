@@ -1,0 +1,25 @@
+.control-container {
+  margin-bottom: 16px;
+
+  label {
+    width: 150px;
+    display: inline-block;
+  }
+}
+
+input {
+  width: 200px;
+}
+
+.p-dropdown {
+  width: 200px !important;
+}
+
+.buttons {
+  margin-top: 24px;
+  margin-bottom: 64px;
+
+  p-button:first-child {
+    margin-right: 16px;
+  }
+}
