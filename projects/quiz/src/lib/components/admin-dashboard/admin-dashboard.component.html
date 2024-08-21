@@ -4,8 +4,11 @@
 @if (selectedMenu()) {
   <div id="content" class="content">
     @switch (selectedMenu()!.label) {
-      @case ('Create Worksheet') {
+      @case (createWorksheet) {
         <create-worksheet />
+      }
+      @case (createQuestionsAnswers) {
+        <add-questions-answers />
       }
     }
   </div>

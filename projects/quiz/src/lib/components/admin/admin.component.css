@@ -7,12 +7,14 @@
   }
 }
 
-input {
-  width: 200px;
+.option-container {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
 }
 
-.p-dropdown {
-  width: 200px !important;
+input {
+  width: 250px;
 }
 
 .buttons {
@@ -22,4 +24,10 @@ input {
   p-button:first-child {
     margin-right: 16px;
   }
+}
+
+.add-option {
+  cursor: pointer;
+  text-decoration: underline;
+  width: fit-content;
 }

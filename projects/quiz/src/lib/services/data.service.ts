@@ -1,7 +1,7 @@
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from "@angular/common/http";
 import { Inject, inject, Injectable } from "@angular/core";
-import { Answer, Question, Quiz, Student, Worksheet } from "../../models/model";
-import { catchError, map } from "rxjs";
+import { Answer, GeneralQuestion, GeneralQuestionOption, Question, Quiz, Student, Worksheet } from "../../models/model";
+import { map, tap } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -48,6 +48,23 @@ export class DataService {
         }>(`${this.baseUrl}/quiz/${id}`)
     }
 
+    getAllWorksheets () {
+        const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=get_all_worksheets`);
+        if (!result) return result;
+        return result.pipe(
+            map(items => {
+                if (!items) return null;
+                else return (items as string[]).map((row: string) => JSON.parse(row));
+            })
+        );   
+    }
+
+    getWorksheetById (worksheetId: number) {
+        const result = this.getRequest<string[]>(`${this.fastApiUrl}/worksheet/${worksheetId}`);
+        if (!result) return result;
+        return result.pipe(tap(items => items));   
+    }
+
     addWorksheet(worksheet: Worksheet) {
         const { id, ...rest } = worksheet;
         return this.postRequest(
@@ -57,6 +74,34 @@ export class DataService {
                 json_request: [
                     { ...rest }
                 ]
+            }
+        );
+    }
+
+    addGeneralQuestion(question: GeneralQuestion) {
+        const { id, ...rest } = question;
+        return this.postRequest(
+            `${this.fastApiUrl}/add?module=add_general_question`,
+            {
+                module: "add_general_question",
+                json_request: [
+                    { ...rest }
+                ]
+            }
+        );
+    }
+
+    addAnswerOptions(options: GeneralQuestionOption[]) {
+        if (!options?.length) return;
+        const optionsWithoutId = options.map(option => {
+            const { id, ...rest } = option || {};
+            return rest;
+        })
+        return this.postRequest(
+            `${this.fastApiUrl}/add?module=add_question_option`,
+            {
+                module: "add_question_option",
+                json_request: optionsWithoutId
             }
         );
     }
@@ -77,7 +122,7 @@ export class DataService {
         const request = new HttpRequest("POST", url, payload);
         return this.http.request(request).pipe(
             map(event => {
-                if(event.type == HttpEventType.Response) {
+                if(event.type == HttpEventType.Response && event.status === 200) {
                     return event.body;
                 }
                 return null;

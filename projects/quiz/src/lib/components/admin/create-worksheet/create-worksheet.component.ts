@@ -9,7 +9,6 @@ import { ToastModule } from 'primeng/toast';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DataService } from '../../../services/data.service';
 import { Topic, Worksheet } from '../../../../models/model';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'create-worksheet',
@@ -61,11 +60,15 @@ export class CreateWorksheetComponent {
   submitValues () {
     this.dataService.addWorksheet(this.worksheet()).pipe(
       tap((result: any) => {
-        if (!result || result.type === 0) return;
+        if (!result) return this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error when adding worksheet'
+        });;
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: result?.toString()
+          detail: result
         });
         this.resetValues();
       }),
@@ -73,7 +76,7 @@ export class CreateWorksheetComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: error.message
+          detail: `Error when adding worksheet: ${error.message}`
         });
         throw error;
       })

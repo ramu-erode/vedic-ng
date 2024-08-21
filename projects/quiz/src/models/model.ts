@@ -10,6 +10,20 @@ export interface Question {
     type: string
 }
 
+export interface GeneralQuestion {
+    worksheet_id: number;
+    id: number;
+    content: string;
+    type: string
+}
+
+export interface GeneralQuestionOption {
+    id: number;
+    general_question_id: number;
+    content: string;
+    is_correct: boolean;
+}
+
 export interface Answer {
     id: number;
     questionId: number;
