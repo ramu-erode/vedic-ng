@@ -1,0 +1,46 @@
+<p-toast />
+@if (showLoader) {
+  <div class="card flex justify-content-center">
+    <p-progressSpinner styleClass="w-3rem h-3rem" />
+  </div>
+} @else {
+  <div class="add-new-worksheet-container">
+    <h3>Worksheets</h3>
+    <i class="pi pi-refresh" (click)="loadWorksheets()"></i>
+    <p-button label="Add New Worksheet" (click)="addNewWorksheet()" />
+  </div>
+  <p-table [value]="worksheets">
+    <ng-template pTemplate="header">
+      <tr>
+          <th>Topic</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Table Of</th>
+          <th>Is Practice Worksheet?</th>
+          <th>Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-worksheet>
+        <tr>
+          <td>{{ worksheet.topicName }}</td>
+          <td>{{ worksheet.name }}</td>
+          <td>{{ worksheet.type }}</td>
+          <td>{{ worksheet.table_of }}</td>
+          <td>{{ worksheet.is_practice === 1 ? "Yes" : "No" }}</td>
+          <td><a href="#" (click)="editWorksheet($event, worksheet)">Edit</a></td>
+        </tr>
+    </ng-template>
+  </p-table>
+}
+<p-dialog
+  header="Add Worksheet"
+  [modal]="true"
+  [(visible)]="showAddWorksheet"
+>
+  <create-worksheet
+    (showToast)="showToastMessage($event)"
+    [topics]="topics"
+    (closeDialog)="closeAddWorksheet()"
+    [selectedWorksheet]="selectedWorksheet"
+  />
+</p-dialog>

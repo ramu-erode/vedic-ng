@@ -66,6 +66,12 @@ export interface Worksheet {
     topic_id: number;
     name: string;
     type: string;
-    table_of: string;
-    is_practice: boolean;
+    table_of: string | null;
+    is_practice: 0 | 1;
+}
+
+export interface EditFields {
+    field_name: string;
+    field_type: string;
+    field_value: any;
 }

@@ -1,0 +1,48 @@
+<div class="control-container">
+  <label for="name">Worksheet name</label>
+  <input pInputText id="name" [(ngModel)]="worksheet.name" />
+</div>
+<div class="control-container">
+  <label for="topic">Topic</label>
+  <p-dropdown
+    inputId="topic"
+    [options]="topics"
+    optionLabel="name"
+    optionValue="id"
+    placeholder="Select a topic"
+    [style]="{'width': '250px'}"
+    [(ngModel)]="worksheet.topic_id"
+  />
+</div>
+<div class="control-container">
+  <label for="type">Type</label>
+  <p-dropdown
+    inputId="type"
+    [options]="types"
+    placeholder="Select a type"
+    [style]="{'width': '250px'}"
+    [(ngModel)]="worksheet.type"
+    (onChange)="typeChangeHandler()"
+  />
+</div>
+@if (worksheet.type === "Table") {
+  <div class="control-container">
+    <label for="table">Table of</label>
+    <input pInputText id="table" [(ngModel)]="worksheet.table_of" />
+  </div>
+}
+<div class="control-container">
+  <label for="isPractice">Is practice sheet?</label>
+  <p-checkbox
+    inputId="isPractice"
+    [binary]="true"
+    (onChange)="isPracticeChangeHandler($event)"
+  /> 
+</div>
+<div class="buttons">
+  <p-button label="Reset" (click)="resetValues()" severity="secondary" />
+  <p-button
+    [label]="selectedWorksheet ? 'Update' : 'Add'"
+    (click)="selectedWorksheet ? updateWorksheet() : addWorksheet()"
+  />
+</div>

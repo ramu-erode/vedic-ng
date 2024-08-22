@@ -48,6 +48,17 @@ export class DataService {
         }>(`${this.baseUrl}/quiz/${id}`)
     }
 
+    getAllTopics () {
+        const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=get_all_topics`);
+        if (!result) return result;
+        return result.pipe(
+            map(items => {
+                if (!items) return null;
+                else return (items as string[]).map((row: string) => JSON.parse(row));
+            })
+        );   
+    }
+
     getAllWorksheets () {
         const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=get_all_worksheets`);
         if (!result) return result;
@@ -102,6 +113,26 @@ export class DataService {
             {
                 module: "add_question_option",
                 json_request: optionsWithoutId
+            }
+        );
+    }
+
+    getDataForEdit (module: string, id: number) {
+        return this.postRequest(
+            `${this.fastApiUrl}/data_for_edit?module=${module}`,
+            {
+                module,
+                json_request: { id }
+            }
+        );
+    }
+
+    editData (module: string, payload: any) {
+        return this.postRequest(
+            `${this.fastApiUrl}/edit?module=${module}`,
+            {
+                module,
+                json_request: payload
             }
         );
     }
