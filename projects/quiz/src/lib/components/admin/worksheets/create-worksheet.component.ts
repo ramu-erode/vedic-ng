@@ -72,7 +72,7 @@ export class CreateWorksheetComponent {
   }
 
   addWorksheet () {
-    this.dataService.addWorksheet(this.worksheet).pipe(
+    this.dataService.addModule("add_worksheet", this.worksheet).pipe(
       tap((result: any) => {
         if (!result) return;
         this.showToast.emit(['success', 'success', result]);

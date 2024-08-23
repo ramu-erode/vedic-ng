@@ -1,0 +1,55 @@
+<p-toast />
+@if (showLoader) {
+  <div class="card flex justify-content-center">
+    <p-progressSpinner styleClass="w-3rem h-3rem" />
+  </div>
+} @else {
+  <h3>Manage Questions and Answers</h3>
+  <div class="control-container">
+    <p-dropdown
+      inputId="worksheet"
+      [options]="worksheets"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Select a worksheet"
+      [style]="{'width': '250px'}"
+      [(ngModel)]="selectedWorksheetId"
+    />
+  </div>
+  <hr />
+  <div class="add-new-question-container">
+    <h4>Questions</h4>
+    <i class="pi pi-refresh" (click)="loadQuestions()" ></i>
+    <p-button label="Add New Question" (click)="addNewQuestion()" />
+  </div>
+  @if (questions.length) {
+    <p-table [value]="questions">
+      <ng-template pTemplate="header">
+        <tr>
+            <th>Content</th>
+            <th>Type</th>
+            <th>Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-question>
+          <tr>
+            <td>{{ question.content }}</td>
+            <td>{{ question.type }}</td>
+            <td><a href="#" (click)="editQuestion($event, question)">Edit</a></td>
+          </tr>
+      </ng-template>
+    </p-table>
+  }
+}
+<p-dialog
+  [header]="selectedQuestion ? 'Update Question' : 'Add Question'"
+  [modal]="true"
+  [(visible)]="showAddQuestion"
+>
+  <add-questions-answers
+    (showToast)="showToastMessage($event)"
+    (closeDialog)="closeAddQuestion()"
+    [worksheetId]="selectedWorksheetId()"
+    [selectedQuestion]="selectedQuestion"
+  />
+</p-dialog>

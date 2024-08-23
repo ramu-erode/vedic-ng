@@ -11,12 +11,14 @@ import {
 import { AddQuestionsAnswersComponent } from '../admin/questions-answers/add-questions-answers.component';
 import { WorksheetsComponent } from '../admin/worksheets/worksheets.component';
 import { Worksheet } from '../../../models/model';
+import { QuestionsComponent } from '../admin/questions-answers/questions.component';
 
 @Component({
   selector: 'admin-dashboard',
   standalone: true,
   imports: [
-    MenuModule, CreateWorksheetComponent, AddQuestionsAnswersComponent, WorksheetsComponent
+    MenuModule, CreateWorksheetComponent, AddQuestionsAnswersComponent, WorksheetsComponent,
+    QuestionsComponent
   ],
   providers: [UserStore],
   templateUrl: './admin-dashboard.component.html',

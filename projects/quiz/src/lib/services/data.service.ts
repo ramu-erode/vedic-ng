@@ -71,17 +71,17 @@ export class DataService {
     }
 
     getWorksheetById (worksheetId: number) {
-        const result = this.getRequest<string[]>(`${this.fastApiUrl}/worksheet/${worksheetId}`);
+        const result = this.getRequest(`${this.fastApiUrl}/worksheet/${worksheetId}`);
         if (!result) return result;
         return result.pipe(tap(items => items));   
     }
 
-    addWorksheet(worksheet: Worksheet) {
-        const { id, ...rest } = worksheet;
+    addModule (module: string, payload: any) {
+        const { id, ...rest } = payload;
         return this.postRequest(
-            `${this.fastApiUrl}/add?module=add_worksheet`,
+            `${this.fastApiUrl}/add?module=${module}`,
             {
-                module: "add_worksheet",
+                module,
                 json_request: [
                     { ...rest }
                 ]
@@ -89,21 +89,17 @@ export class DataService {
         );
     }
 
-    addGeneralQuestion(question: GeneralQuestion) {
-        const { id, ...rest } = question;
-        return this.postRequest(
-            `${this.fastApiUrl}/add?module=add_general_question`,
+    deleteModule (module: string, payload: any) {
+        return this.deleteRequest(
+            `${this.fastApiUrl}/delete?module=${module}`,
             {
-                module: "add_general_question",
-                json_request: [
-                    { ...rest }
-                ]
+                module,
+                json_request: payload
             }
         );
     }
 
-    addAnswerOptions(options: GeneralQuestionOption[]) {
-        if (!options?.length) return;
+    addAnswerOptions (options: GeneralQuestionOption[]) {
         const optionsWithoutId = options.map(option => {
             const { id, ...rest } = option || {};
             return rest;
@@ -153,6 +149,17 @@ export class DataService {
         const request = new HttpRequest("POST", url, payload);
         return this.http.request(request).pipe(
             map(event => {
+                if(event.type == HttpEventType.Response && event.status === 200) {
+                    return event.body;
+                }
+                return null;
+            })
+        )
+    }
+
+    private deleteRequest(url: string, payload: any) {
+        return this.http.delete(url, { body: payload }).pipe(
+            map((event: any) => {
                 if(event.type == HttpEventType.Response && event.status === 200) {
                     return event.body;
                 }

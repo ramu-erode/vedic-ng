@@ -1,6 +1,6 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CheckboxModule } from 'primeng/checkbox';
+import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { GeneralQuestionOption } from '../../../../models/model';
 
@@ -9,26 +9,43 @@ import { GeneralQuestionOption } from '../../../../models/model';
   standalone: true,
   imports: [CheckboxModule, InputTextModule, FormsModule, ReactiveFormsModule],
   template: `
-    <div class="option-container">
-      <div class="control-container">
-        <label for="content">{{optionLabel}}</label>
-        <input pInputText id="content" [(ngModel)]="option.content" />
+    @if (option) {
+      <div class="option-container">
+        <div class="control-container">
+          <label for="content">{{optionLabel}}</label>
+          <input pInputText id="content" [(ngModel)]="option.content" />
+        </div>
+        <div class="control-container">
+          <label for="isCorrect">Is correct answer?</label>
+          <p-checkbox
+            inputId="isCorrect"
+            [binary]="true"
+            (onChange)="setIsCorrect($event)"
+            [ngModel]="option.is_correct"
+          />
+          @if (showRemoveOption) {
+            <p class="remove-option" (click)="removeAnswerOption()">Remove Option</p>
+          }
+        </div>
       </div>
-      <div class="control-container">
-        <label for="isCorrect">Is correct answer?</label>
-        <p-checkbox
-          inputId="isCorrect"
-          [binary]="true"
-          [(ngModel)]="option.is_correct"
-        /> 
-      </div>
-    </div>
+    }
   `,
-  styleUrl: './../admin.component.css'
+  styleUrl: './questions.component.css'
 })
 export class GeneralQuestionOptionComponent {
   @Input() optionLabel: string = "Option Content";
+  @Input() showRemoveOption: boolean = false;
   @Input() option: GeneralQuestionOption = {
-    id: 0, general_question_id: 0, content: '', is_correct: false
+    id: -1, general_question_id: 0, content: '', is_correct: 0
   };
+  @Output() removeOption = new EventEmitter();
+
+  setIsCorrect (event: CheckboxChangeEvent) {
+    this.option.is_correct = event.checked ? 1 : 0;
+  }
+
+  removeAnswerOption () {
+    if (this.option.id < 0) return;
+    this.removeOption.emit(this.option.id);
+  }
 }

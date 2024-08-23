@@ -14,14 +14,16 @@ export interface GeneralQuestion {
     worksheet_id: number;
     id: number;
     content: string;
-    type: string
+    type: string;
+    general_question_options?: GeneralQuestionOption[] | string[]
 }
 
 export interface GeneralQuestionOption {
     id: number;
     general_question_id: number;
     content: string;
-    is_correct: boolean;
+    is_correct: number;
+    canDelete?: boolean;
 }
 
 export interface Answer {

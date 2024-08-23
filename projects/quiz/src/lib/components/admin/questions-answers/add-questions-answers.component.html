@@ -1,20 +1,6 @@
-<p-toast />
-<h3>Add Questions and Answers</h3>
-<div class="control-container">
-  <label for="worksheet">Worksheet</label>
-  <p-dropdown
-    inputId="worksheet"
-    [options]="worksheets()"
-    optionLabel="name"
-    optionValue="id"
-    placeholder="Select a worksheet"
-    [style]="{'width': '250px'}"
-    [(ngModel)]="question().worksheet_id"
-  />
-</div>
 <div class="control-container">
   <label for="content">Question content</label>
-  <input pInputText id="content" [(ngModel)]="question().content" />
+  <input pInputText id="content" [(ngModel)]="question.content" />
 </div>
 <div class="control-container">
   <label for="type">Type</label>
@@ -23,26 +9,32 @@
     [options]="types"
     placeholder="Select a type"
     [style]="{'width': '250px'}"
-    [(ngModel)]="question().type"
+    [(ngModel)]="question.type"
     (onChange)="typeChangeHandler()"
   />
 </div>
-@switch (question().type) {
-  @case ("General") {
-    <general-question-option [option]="answerOptions()[0]" />
+@if (selectedQuestion) {
+  @switch (question.type) {
+    @case (questionTypes.GENERAL) {
+      <general-question-option [option]="generalQuestionOptions[0]" />
+    }
+    @case (questionTypes.RADIO) {
+      <general-question-option
+        *ngFor="let option of generalQuestionOptions; index as i;"
+        [option]="option"
+        optionLabel="Option {{i + 1}} content"
+        (removeOption)="removeOption($event)"
+        [showRemoveOption]="true"
+      />
+    }
   }
-  @case ("radio") {
-    <general-question-option
-      *ngFor="let option of answerOptions(); index as i;"
-      [option]="option"
-      optionLabel="Option {{i + 1}} content"
-    />
+  @if (question.type === questionTypes.RADIO) {
+    <p class="add-option" (click)="addAnswerOption()">+ Add Option</p>
   }
-}
-@if (question().type === "radio") {
-  <p class="add-option" (click)="addAnswerOption()">+ Add Option</p>
 }
 <div class="buttons">
   <p-button label="Reset" (click)="resetValues()" severity="secondary" />
-  <p-button label="Submit" (click)="submitValues()" />
+  <p-button
+    [label]="question.id === -1 ? 'Add' : 'Update'"
+    (click)="question.id === -1 ? addQuestion() : updateQuestion()" />
 </div>

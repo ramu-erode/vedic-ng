@@ -1,4 +1,4 @@
-import { EditFields } from "../../models/model";
+import { EditFields, GeneralQuestionOption } from "../../models/model";
 
 export function getJSONToUpdate (editFormatData: EditFields[], updatedData: any) {
   const jsonToUpdate = editFormatData?.filter((field: any) => {
@@ -14,4 +14,9 @@ export function getJSONToUpdate (editFormatData: EditFields[], updatedData: any)
     }
   });
   return updatedJson;
+}
+
+export function getJSONFormat (value: GeneralQuestionOption[] | string[]) {
+  if (!value?.length) return []
+  return value.map(option => option ? JSON.parse(option as string) : option);
 }
