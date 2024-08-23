@@ -48,19 +48,8 @@ export class DataService {
         }>(`${this.baseUrl}/quiz/${id}`)
     }
 
-    getAllTopics () {
-        const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=get_all_topics`);
-        if (!result) return result;
-        return result.pipe(
-            map(items => {
-                if (!items) return null;
-                else return (items as string[]).map((row: string) => JSON.parse(row));
-            })
-        );   
-    }
-
-    getAllWorksheets () {
-        const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=get_all_worksheets`);
+    getAllInfo (module: string) {
+        const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=${module}`);
         if (!result) return result;
         return result.pipe(
             map(items => {
@@ -74,6 +63,20 @@ export class DataService {
         const result = this.getRequest(`${this.fastApiUrl}/worksheet/${worksheetId}`);
         if (!result) return result;
         return result.pipe(tap(items => items));   
+    }
+
+    addAnswerOptions (options: GeneralQuestionOption[]) {
+        const optionsWithoutId = options.map(option => {
+            const { id, ...rest } = option || {};
+            return rest;
+        })
+        return this.postRequest(
+            `${this.fastApiUrl}/add?module=add_question_option`,
+            {
+                module: "add_question_option",
+                json_request: optionsWithoutId
+            }
+        );
     }
 
     addModule (module: string, payload: any) {
@@ -95,20 +98,6 @@ export class DataService {
             {
                 module,
                 json_request: payload
-            }
-        );
-    }
-
-    addAnswerOptions (options: GeneralQuestionOption[]) {
-        const optionsWithoutId = options.map(option => {
-            const { id, ...rest } = option || {};
-            return rest;
-        })
-        return this.postRequest(
-            `${this.fastApiUrl}/add?module=add_question_option`,
-            {
-                module: "add_question_option",
-                json_request: optionsWithoutId
             }
         );
     }

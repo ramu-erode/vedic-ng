@@ -34,7 +34,7 @@ export class WorksheetsComponent {
     private messageService: MessageService
   ) {
     this.showLoader = true;
-    this.dataService.getAllTopics().pipe(
+    this.dataService.getAllInfo("get_all_topics").pipe(
       tap(result => {
         if (!result?.length) return;
         this.topics = result;
@@ -50,7 +50,7 @@ export class WorksheetsComponent {
 
   loadWorksheets () {
     this.showLoader = true;
-    this.dataService.getAllWorksheets().pipe(
+    this.dataService.getAllInfo("get_all_worksheets").pipe(
       tap(result => {
         if (!result?.length) return;
         this.worksheets = result.map(worksheet => {
