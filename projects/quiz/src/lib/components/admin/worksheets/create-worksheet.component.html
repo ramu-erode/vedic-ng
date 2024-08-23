@@ -37,6 +37,7 @@
     inputId="isPractice"
     [binary]="true"
     (onChange)="isPracticeChangeHandler($event)"
+    [ngModel]="worksheet.is_practice === 1"
   /> 
 </div>
 <div class="buttons">

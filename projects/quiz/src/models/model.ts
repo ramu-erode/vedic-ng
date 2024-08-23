@@ -22,7 +22,7 @@ export interface GeneralQuestionOption {
     id: number;
     general_question_id: number;
     content: string;
-    is_correct: number;
+    is_correct: 0 | 1;
     canDelete?: boolean;
 }
 
@@ -44,6 +44,7 @@ export interface Profile {
     name: string;
     whats_app_no: string,
     role_id: number
+    is_active: 0 | 1;
 }
 
 export interface Student {
@@ -53,7 +54,7 @@ export interface Student {
     date_of_birth: Date;
     class: string;
     class_in_year: string;
-    is_active: boolean;
+    is_active:  0 | 1;
 }
 
 export interface Topic {

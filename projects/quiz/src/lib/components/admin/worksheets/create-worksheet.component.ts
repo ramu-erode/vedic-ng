@@ -42,8 +42,7 @@ export class CreateWorksheetComponent {
   };
 
   ngOnChanges () {
-    if (!this.selectedWorksheet) return;
-    this.worksheet = cloneDeep(this.selectedWorksheet);
+    this.resetValues();
   }
 
   constructor (
@@ -52,14 +51,16 @@ export class CreateWorksheetComponent {
   }
 
   resetValues () {
-    this.worksheet = cloneDeep(this.selectedWorksheet) || {
-      id: 0,
-      topic_id: -1,
-      name: '',
-      type: '',
-      table_of: '',
-      is_practice: 0
-    };
+    this.worksheet = this.selectedWorksheet
+      ? cloneDeep(this.selectedWorksheet)
+      : {
+        id: 0,
+        topic_id: -1,
+        name: '',
+        type: '',
+        table_of: '',
+        is_practice: 0
+      };
   }
 
   typeChangeHandler () {
@@ -99,6 +100,7 @@ export class CreateWorksheetComponent {
         );
         throw error;
       }),
+      finalize(() => this.closeDialog.emit())
     ).subscribe();
   }
 
@@ -114,8 +116,7 @@ export class CreateWorksheetComponent {
           ['error', 'Error', `Error when fetching worksheet to edit: ${error.message}`]
         );
         throw error;
-      }),
-      finalize(() => this.closeDialog.emit())
+      })
     ).subscribe()
   }
 }
