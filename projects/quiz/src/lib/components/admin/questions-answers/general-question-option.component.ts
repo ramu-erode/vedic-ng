@@ -10,24 +10,26 @@ import { GeneralQuestionOption } from '../../../../models/model';
   imports: [CheckboxModule, InputTextModule, FormsModule, ReactiveFormsModule],
   template: `
     @if (option) {
-      <div class="option-container">
-        <div class="control-container">
-          <label for="content">{{optionLabel}}</label>
-          <input pInputText id="content" [(ngModel)]="option.content" />
+      @if (!option.canDelete) {
+        <div class="option-container">
+          <div class="control-container">
+            <label for="content">{{optionLabel}}</label>
+            <input pInputText id="content" [(ngModel)]="option.content" />
+          </div>
+          <div class="control-container">
+            <label for="isCorrect">Is correct answer?</label>
+            <p-checkbox
+              inputId="isCorrect"
+              [binary]="true"
+              (onChange)="setIsCorrect($event)"
+              [ngModel]="option.is_correct === 1"
+            />
+            @if (showRemoveOption) {
+              <p class="remove-option" (click)="removeAnswerOption()">Remove Option</p>
+            }
+          </div>
         </div>
-        <div class="control-container">
-          <label for="isCorrect">Is correct answer?</label>
-          <p-checkbox
-            inputId="isCorrect"
-            [binary]="true"
-            (onChange)="setIsCorrect($event)"
-            [ngModel]="option.is_correct"
-          />
-          @if (showRemoveOption) {
-            <p class="remove-option" (click)="removeAnswerOption()">Remove Option</p>
-          }
-        </div>
-      </div>
+      }
     }
   `,
   styleUrl: './questions.component.css'
@@ -45,7 +47,6 @@ export class GeneralQuestionOptionComponent {
   }
 
   removeAnswerOption () {
-    if (this.option.id < 0) return;
     this.removeOption.emit(this.option.id);
   }
 }

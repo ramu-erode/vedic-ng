@@ -11,7 +11,7 @@ import { DataService } from '../../../services/data.service';
 import { EditFields, GeneralQuestion, GeneralQuestionOption } from '../../../../models/model';
 import { GeneralQuestionOptionComponent } from './general-question-option.component';
 import { QuestionTypes } from '../../../constants/question-types';
-import { getJSONFormat, getJSONToUpdate } from '../../../utilities/format-data';
+import { getJSONFormatOptions, getJSONToUpdate } from '../../../utilities/format-data';
 
 @Component({
   selector: 'add-questions-answers',
@@ -60,7 +60,7 @@ export class AddQuestionsAnswersComponent {
     if (this.selectedQuestion) {
       this.question = cloneDeep(this.selectedQuestion);
       if (this.question.general_question_options?.length) {
-        this.generalQuestionOptions = getJSONFormat(this.question.general_question_options);
+        this.generalQuestionOptions = getJSONFormatOptions(this.question);
       } else {
         this.generalQuestionOptions = [{
           id: -1,
@@ -133,7 +133,7 @@ export class AddQuestionsAnswersComponent {
 
   addQuestionOptions () {
     if (!this.generalQuestionOptions?.length) return;
-    const optionsToAdd = this.generalQuestionOptions.filter(option => option.id < 0);
+    const optionsToAdd = this.generalQuestionOptions.filter(option => option.id < 0 && !option.canDelete);
     if (!optionsToAdd.length) return;
 
     this.dataService.addAnswerOptions(optionsToAdd).pipe(
@@ -228,7 +228,7 @@ export class AddQuestionsAnswersComponent {
   typeChangeHandler () {
     if (!this.selectedQuestion) return;
     if (this.question.general_question_options?.length) {
-      this.generalQuestionOptions = getJSONFormat(this.question.general_question_options);
+      this.generalQuestionOptions = getJSONFormatOptions(this.question);
       return;
     }
     this.generalQuestionOptions = [{
