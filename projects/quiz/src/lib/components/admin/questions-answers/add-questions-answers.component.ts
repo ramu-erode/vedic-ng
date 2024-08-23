@@ -229,6 +229,12 @@ export class AddQuestionsAnswersComponent {
     if (!this.selectedQuestion) return;
     if (this.question.general_question_options?.length) {
       this.generalQuestionOptions = getJSONFormatOptions(this.question);
+      if (this.question.type === QuestionTypes.GENERAL) {
+        this.generalQuestionOptions = this.generalQuestionOptions.map((option, index) => {
+          if (index === 0) return option;
+          return { ...option, canDelete: true, is_correct: 0 };
+        });
+      }
       return;
     }
     this.generalQuestionOptions = [{
