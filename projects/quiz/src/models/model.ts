@@ -78,3 +78,12 @@ export interface EditFields {
     field_type: string;
     field_value: any;
 }
+
+export interface StudentTopic {
+    student_id: number;
+    topic_id: number;
+    completion_date: Date | null;
+    remarks: string;
+    id: number;
+    name?: string;
+}

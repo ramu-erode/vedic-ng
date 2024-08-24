@@ -4,6 +4,9 @@
 @if (selectedMenu()) {
   <div id="content" class="content">
     @switch (selectedMenu()!.label) {
+      @case (studentTopicCompletion) {
+        <student-topic-completion />
+      }
       @case (worksheets) {
         <worksheets />
       }

@@ -81,7 +81,8 @@ export class AddQuestionsAnswersComponent {
   }
 
   addQuestion () {
-    this.dataService.addModule("add_general_question", this.question).pipe(
+    const { id, ...rest } = this.question;
+    this.dataService.addModule("add_general_question", [{ ...rest }]).pipe(
       tap((result: any) => {
         if (!result) return;
         this.showToast.emit(['success', 'success', result]);

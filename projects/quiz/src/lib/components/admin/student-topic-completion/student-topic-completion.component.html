@@ -1,0 +1,49 @@
+<p-toast />
+@if (showLoader) {
+  <div class="card flex justify-content-center">
+    <p-progressSpinner styleClass="w-3rem h-3rem" />
+  </div>
+} @else {
+  <h3>Manage Student Topic Completion</h3>
+  <div class="control-container">
+    <p-dropdown
+      inputId="student"
+      [options]="students"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Select a student"
+      [style]="{'width': '250px'}"
+      [(ngModel)]="selectedStudentId"
+    />
+  </div>
+  @if (pendingTopics.length) {
+    <p-table [value]="pendingTopics" [tableStyle]="{'margin-bottom': '24px'}">
+      <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 30%">Topic</th>
+            <th style="width: 20%">Completion Date</th>
+            <th style="width: 50%">Remarks</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-topic let-ri="rowIndex">
+          <tr>
+            <td>{{topic.name}}</td>
+            <td>
+              <p-calendar [(ngModel)]="topic.completion_date" />
+            </td>
+            <td>
+              <textarea 
+                rows="2"
+                cols="30"
+                pInputTextarea
+                [(ngModel)]="topic.remarks"
+                style="width: 100%;"
+              >
+              </textarea>
+            </td>
+          </tr>
+      </ng-template>
+    </p-table>
+    <p-button label="Mark as Complete" (click)="markTopicsAsComplete()" />
+  }
+}

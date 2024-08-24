@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { UserStore } from '../../services/user.store';
@@ -10,15 +10,15 @@ import {
 } from '../../constants/admin-menu-items';
 import { AddQuestionsAnswersComponent } from '../admin/questions-answers/add-questions-answers.component';
 import { WorksheetsComponent } from '../admin/worksheets/worksheets.component';
-import { Worksheet } from '../../../models/model';
 import { QuestionsComponent } from '../admin/questions-answers/questions.component';
+import { StudentTopicCompletionComponent } from '../admin/student-topic-completion/student-topic-completion.component';
 
 @Component({
   selector: 'admin-dashboard',
   standalone: true,
   imports: [
     MenuModule, CreateWorksheetComponent, AddQuestionsAnswersComponent, WorksheetsComponent,
-    QuestionsComponent
+    QuestionsComponent, StudentTopicCompletionComponent
   ],
   providers: [UserStore],
   templateUrl: './admin-dashboard.component.html',
@@ -30,6 +30,7 @@ export class AdminDashboard {
   selectedMenu = signal<MenuItem | null>(null);
   worksheets = WORKSHEETS;
   questionsAnswers = QUESTIONS_AND_ANSWERS;
+  studentTopicCompletion = STUDENT_TOPIC_COMPLETION;
 
   constructor() {
   }
@@ -40,7 +41,10 @@ export class AdminDashboard {
       { label: COURSE_TOPIC_MASTER },
       { label: PROFILE_SETTINGS },
       { label: STUDENTS_MASTER },
-      { label: STUDENT_TOPIC_COMPLETION },
+      {
+        label: this.studentTopicCompletion,
+        command: (event) => this.loadAdminModule(event)
+      },
       { label: STUDENT_ATTENDANCE },
       {
         label: this.worksheets,

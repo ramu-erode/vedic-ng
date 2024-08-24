@@ -23,9 +23,9 @@ export class DataService {
         );
     }
 
-    getPendingTopicsForStudent (studentId: number) {
+    getDataForId (module: string, id: number) {
         const result = this.getRequest<string[]>(
-            `${this.fastApiUrl}/get_data_for_id?module=get_pending_topic_for_student&id=${studentId}`
+            `${this.fastApiUrl}/get_data_for_id?module=${module}&id=${id}`
         );
         if (result === null) return result;
 
@@ -80,14 +80,11 @@ export class DataService {
     }
 
     addModule (module: string, payload: any) {
-        const { id, ...rest } = payload;
         return this.postRequest(
             `${this.fastApiUrl}/add?module=${module}`,
             {
                 module,
-                json_request: [
-                    { ...rest }
-                ]
+                json_request: payload
             }
         );
     }
