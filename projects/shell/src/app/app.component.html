@@ -9,7 +9,7 @@
       (ngModelChange)="toggleLightDark()"
     />
     <div class="card flex justify-content-center ml-2">
-      <p-menu #menu [model]="userMenu" [popup]="true" />
+      <p-menu #menu [model]="userStore.userMenu()" [popup]="true" />
       <p-button (onClick)="menu.toggle($event)" icon="pi pi-user" [rounded]="true" />
   </div>
   </div>

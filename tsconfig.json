@@ -16,6 +16,7 @@
     "moduleResolution": "bundler",
     "paths": {
       "@vedic/quiz": ["./projects/quiz/src/public-api.ts"],
+      "@vedic/shell": ["./projects/shell/src/public-api.ts"],
     },
     "importHelpers": true,
     "target": "ES2022",

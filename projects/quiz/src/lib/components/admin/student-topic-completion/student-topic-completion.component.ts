@@ -10,8 +10,9 @@ import { ToastModule } from 'primeng/toast';
 import { DropdownModule } from "primeng/dropdown";
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DataService } from "../../../services/data.service";
-import { Student, StudentTopic, Topic } from "../../../../models/model";
+import { StudentTopic } from "../../../../models/model";
 import { ButtonModule } from "primeng/button";
+import { Student } from "@vedic/shell";
 import { ADD_STUDNET_TOPIC, GET_ALL_ACTIVE_STUDENTS, GET_PENDING_TOPIC_FOR_STUDENT } from "../../../constants/api-module-names";
 
 @Component({

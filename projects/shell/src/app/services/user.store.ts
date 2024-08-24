@@ -1,14 +1,17 @@
 import { DestroyRef, effect, inject, Injectable, signal } from "@angular/core";
-import { DataService } from "./data.service";
 import { catchError, tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Profile, Student } from "../../models/model";
+import { AuthenticationService } from "../services/AuthenticationService";
+import { DataService } from "./data.service";
+import { Student, Profile } from "../models/model";
+import { MenuItem } from "primeng/api";
+import { Router } from "@angular/router";
 
 @Injectable({ providedIn: 'root' })
 
 export class UserStore {
   #destroyRef = inject(DestroyRef);
-  whatsappNumber = "+919840004466";
+  whatsappNumber: string = "";
   #user = signal<Profile | null>(null);
   user = this.#user.asReadonly();
 
@@ -21,7 +24,17 @@ export class UserStore {
   #currentStudent = signal<Student | null>(null);
   currentStudent = this.#currentStudent.asReadonly();
 
-  constructor(private dataService: DataService) {
+  #userMenu = signal<MenuItem[] | undefined>(undefined);
+  userMenu = this.#userMenu.asReadonly();
+
+  constructor(
+    private dataService: DataService,
+    private router : Router,
+    private authService: AuthenticationService,
+
+  ) {
+    this.whatsappNumber = this.authService.getLoggedInUserNumber();
+    if (!this.whatsappNumber) return;
     this.dataService.getUserProfile(this.whatsappNumber).pipe(
       tap(result => {
         if (!result?.length) return;
@@ -38,6 +51,25 @@ export class UserStore {
     effect(() => {
       if (!this.#user()) return;
       this.#isAdmin.set(this.#user()?.role_id === 1);
+
+      this.#userMenu.set([{
+        label: 'Admin Dashboard',
+        path: '/admin-dashboard',
+        visible: this.#isAdmin(),
+        command: () => {
+          this.router.navigate(['/admin-dashboard']);
+        }
+      }, {
+        label: 'Student Dashboard',
+        path: '/quizzes',
+        visible: !this.#isAdmin()
+      }, {
+        label: 'Logout',
+        path: '/login',
+        command: () => {
+          this.router.navigate(['/login']);
+        }
+      }]);
     }, { allowSignalWrites: true })
   }
 }

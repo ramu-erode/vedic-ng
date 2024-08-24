@@ -7,11 +7,13 @@
 [data-theme="light"] {
   --header-footer-bg-color: var(--primary-200);
   --question-panel-bg-color: var(--primary-50);
+  --login-form-border-color: var(--primary-50);
 }
 
 [data-theme="dark"] {
   --header-footer-bg-color: var(--primary-900);
   --question-panel-bg-color: var(--surface-d);
+  --login-form-border-color: var(--surface-d);
 }
 
 

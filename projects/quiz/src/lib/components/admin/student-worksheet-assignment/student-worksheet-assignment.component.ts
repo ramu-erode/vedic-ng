@@ -9,7 +9,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { DataService } from '../../../services/data.service';
-import { Student, StudentWorksheet } from '../../../../models/model';
+import { StudentWorksheet } from '../../../../models/model';
+import { Student } from "@vedic/shell";
 import { ADD_STUDENT_WORKSHEET, GET_ALL_ACTIVE_STUDENTS, GET_UNASSIGNED_WORKSHEETS } from '../../../constants/api-module-names';
 
 @Component({

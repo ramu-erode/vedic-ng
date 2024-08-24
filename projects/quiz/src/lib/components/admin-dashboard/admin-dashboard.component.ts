@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
-import { UserStore } from '../../services/user.store';
+import { UserStore } from '@vedic/shell';
 import { CreateWorksheetComponent } from '../admin/worksheets/create-worksheet.component';
 import {
   COURSE_MASTER, COURSE_TOPIC_MASTER, QUESTIONS_AND_ANSWERS, WORKSHEETS,

@@ -1,0 +1,35 @@
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from "@angular/common/http";
+import { Inject, inject, Injectable } from "@angular/core";
+import { map } from "rxjs";
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DataService {
+
+    private http = inject(HttpClient);
+
+    constructor(
+        @Inject("FASTAPI_BASE_URL") private fastApiUrl: string
+    ) {
+
+    }
+
+    getUserProfile(whatsappNumber: string) {
+        return this.getRequest<string[]>(
+            `${this.fastApiUrl}/get_data_like?module=get_profile_for_whats_app_no&id=${encodeURIComponent(whatsappNumber)}`
+        );
+    }
+
+    private getRequest<T>(url: string, payload: any = null) {
+        const request = new HttpRequest("GET", url, payload);
+        return this.http.request<T>(request).pipe(
+            map(event => {
+                if(event.type == HttpEventType.Response) {
+                    return event.body;
+                }
+                return null;
+            })
+        );
+    }
+}

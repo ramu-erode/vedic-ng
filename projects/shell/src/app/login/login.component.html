@@ -1,0 +1,10 @@
+<div>
+  <h2>Login</h2>
+  <p-messages [(value)]="messages" [enableService]="false" />
+  <form (ngSubmit)="onSubmit()">
+    <label for="whatsapp">Whatsapp Number:</label>
+    <input pInputText id="whatsapp" [(ngModel)]="whatsappNumber" name="whatsapp" required>
+    <p-button label="Login" type="submit" />
+  </form>
+  <a href="/signup">Register New User</a>
+</div>

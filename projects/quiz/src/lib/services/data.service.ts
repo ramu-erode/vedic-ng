@@ -1,6 +1,6 @@
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from "@angular/common/http";
 import { Inject, inject, Injectable } from "@angular/core";
-import { Answer, GeneralQuestion, GeneralQuestionOption, Question, Quiz, Student, Worksheet } from "../../models/model";
+import { Answer, GeneralQuestionOption, Question, Quiz } from "../../models/model";
 import { map, tap } from "rxjs";
 
 @Injectable({
@@ -15,12 +15,6 @@ export class DataService {
         @Inject("FASTAPI_BASE_URL") private fastApiUrl: string
     ) {
 
-    }
-
-    getUserProfile(whatsappNumber: string) {
-        return this.getRequest<string[]>(
-            `${this.fastApiUrl}/get_data_like?module=get_profile_for_whats_app_no&id=${encodeURIComponent(whatsappNumber)}`
-        );
     }
 
     getDataForId (module: string, id: number) {

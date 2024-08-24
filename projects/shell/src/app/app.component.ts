@@ -6,7 +6,7 @@ import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormsModule } from '@angular/forms';
-import { UserStore } from '../../../quiz/src/lib/services/user.store';
+import { UserStore } from './services/user.store';
 
 @Component({
   selector: 'vedic-shell-root',
@@ -21,31 +21,8 @@ export class AppComponent {
   #document = inject(DOCUMENT);
   userStore = inject(UserStore);
   isDarkMode = false;
-  userMenu: MenuItem[] | undefined;
 
   constructor(private router: Router) {
-    effect(() => {
-      if (!this.userStore.user()) return;
-
-      this.userMenu = [
-        {
-            label: this.userStore.user()?.name,
-            items: [
-                ...(this.userStore.isAdmin()
-                  ? [{
-                      label: 'Admin Dashboard',
-                      path: '/admin-dashboard',
-                      command: () => {
-                        this.router.navigate(['/admin-dashboard']);
-                      }
-                    }]
-                  : []
-                ),
-                { label: 'Student Dashboard', path: '/student-dashboard' }
-            ]
-        }
-    ];
-    })
   }
 
   toggleLightDark() {
