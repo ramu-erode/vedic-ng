@@ -12,7 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DataService } from "../../../services/data.service";
 import { Student, StudentTopic, Topic } from "../../../../models/model";
 import { ButtonModule } from "primeng/button";
-import { ADD_STUDNET_TOPIC, GET_PENDING_TOPIC_FOR_STUDENT } from "../../../constants/api-module-names";
+import { ADD_STUDNET_TOPIC, GET_ALL_ACTIVE_STUDENTS, GET_PENDING_TOPIC_FOR_STUDENT } from "../../../constants/api-module-names";
 
 @Component({
   selector: 'student-topic-completion',
@@ -40,7 +40,7 @@ export class StudentTopicCompletionComponent {
     private messageService: MessageService
   ) {
     this.showLoader = true;
-    this.dataService.getAllInfo("get_all_active_students").pipe(
+    this.dataService.getAllInfo(GET_ALL_ACTIVE_STUDENTS).pipe(
       tap(result => {
         if (!result?.length) return;
         this.students = result;

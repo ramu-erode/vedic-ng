@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DataService } from '../../../services/data.service';
 import { EditFields, Topic, Worksheet } from '../../../../models/model';
 import { getJSONToUpdate } from '../../../utilities/format-data';
+import { ADD_WORKSHEET, B4_EDIT_WORKSHEET_BY_ID, EDIT_WORKSHEET } from '../../../constants/api-module-names';
 
 @Component({
   selector: 'create-worksheet',
@@ -25,8 +26,6 @@ export class CreateWorksheetComponent {
   @Output() showToast = new EventEmitter();
   @Input() topics: Topic[] = [];
   @Input() selectedWorksheet: Worksheet | null = null;
-  getDataModule = "b4_edit_worksheet_by_id";
-  editModule = "edit_worksheet";
   types = [
     'General',
     'Table',
@@ -74,7 +73,7 @@ export class CreateWorksheetComponent {
 
   addWorksheet () {
     const { id, ...rest } = this.worksheet;
-    this.dataService.addModule("add_worksheet", [{ ...rest }]).pipe(
+    this.dataService.addModule(ADD_WORKSHEET, [{ ...rest }]).pipe(
       tap((result: any) => {
         if (!result) return;
         this.showToast.emit(['success', 'success', result]);
@@ -90,7 +89,7 @@ export class CreateWorksheetComponent {
   }
 
   editWorksheet (updatedJson: EditFields[]) {
-    this.dataService.editData(this.editModule, updatedJson).pipe(
+    this.dataService.editData(EDIT_WORKSHEET, updatedJson).pipe(
       tap((result: any) => {
         if (!result) return;
         this.showToast.emit(['success', 'success', result]);
@@ -106,7 +105,7 @@ export class CreateWorksheetComponent {
   }
 
   updateWorksheet () {
-    this.dataService.getDataForEdit(this.getDataModule, this.worksheet.id).pipe(
+    this.dataService.getDataForEdit(B4_EDIT_WORKSHEET_BY_ID, this.worksheet.id).pipe(
       tap(result => {
         if (!result) return;
         const updatedJson = getJSONToUpdate(result as EditFields[], this.worksheet)

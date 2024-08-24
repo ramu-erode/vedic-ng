@@ -12,6 +12,7 @@ import { EditFields, GeneralQuestion, GeneralQuestionOption } from '../../../../
 import { GeneralQuestionOptionComponent } from './general-question-option.component';
 import { QuestionTypes } from '../../../constants/question-types';
 import { getJSONFormatOptions, getJSONToUpdate } from '../../../utilities/format-data';
+import { ADD_GENERAL_QUESTION, B4_EDIT_GENERAL_QUESTION_BY_ID, B4_EDIT_QUESTION_OPTION_BY_ID, DELETE_QUESTION_OPTION, EDIT_GENERAL_QUESTION, EDIT_QUESTION_OPTION } from '../../../constants/api-module-names';
 
 @Component({
   selector: 'add-questions-answers',
@@ -41,10 +42,6 @@ export class AddQuestionsAnswersComponent {
     QuestionTypes.RADIO,
   ];
   generalQuestionOptions: GeneralQuestionOption[] = [];
-  getEditQuestionModule = "b4_edit_general_question_by_id";
-  getEditQuestionOptionModule = "b4_edit_question_option_by_id";
-  editQuestionModule = "edit_general_question";
-  editQuestionOptionModule = "edit_question_option";
 
   constructor (
     private dataService: DataService
@@ -82,7 +79,7 @@ export class AddQuestionsAnswersComponent {
 
   addQuestion () {
     const { id, ...rest } = this.question;
-    this.dataService.addModule("add_general_question", [{ ...rest }]).pipe(
+    this.dataService.addModule(ADD_GENERAL_QUESTION, [{ ...rest }]).pipe(
       tap((result: any) => {
         if (!result) return;
         this.showToast.emit(['success', 'success', result]);
@@ -98,7 +95,7 @@ export class AddQuestionsAnswersComponent {
   }
 
   updateQuestion () {
-    this.dataService.getDataForEdit(this.getEditQuestionModule, this.question.id).pipe(
+    this.dataService.getDataForEdit(B4_EDIT_GENERAL_QUESTION_BY_ID, this.question.id).pipe(
       tap(result => {
         if (!result) return;
         const updatedJson = getJSONToUpdate(result as EditFields[], this.question)
@@ -118,7 +115,7 @@ export class AddQuestionsAnswersComponent {
   }
 
   editQuestion (updatedJson: EditFields[]) {
-    this.dataService.editData(this.editQuestionModule, updatedJson).pipe(
+    this.dataService.editData(EDIT_GENERAL_QUESTION, updatedJson).pipe(
       tap((result: any) => {
         if (!result) return;
         this.showToast.emit(['success', 'success', result]);
@@ -160,7 +157,7 @@ export class AddQuestionsAnswersComponent {
     this.deleteQuestionOptions();
     const updatedJsons: any = [];
     const optionsToUpdateObservables = optionsToUpdate.map((option, index) => {
-      return this.dataService.getDataForEdit(this.getEditQuestionOptionModule, option.id).pipe(
+      return this.dataService.getDataForEdit(B4_EDIT_QUESTION_OPTION_BY_ID, option.id).pipe(
         tap(result => {
           if (!result) return;
           const updatedJson = getJSONToUpdate(result as EditFields[], option);
@@ -184,7 +181,7 @@ export class AddQuestionsAnswersComponent {
   editQuestionOptions (updatedJsons: Array<Array<EditFields>>) {
     const editResults: any = [];
     const optionsToUpdateObservables = updatedJsons.map(updatedJson => {
-      return this.dataService.editData(this.editQuestionOptionModule, updatedJson).pipe(
+      return this.dataService.editData(EDIT_QUESTION_OPTION, updatedJson).pipe(
         tap((result: any) => {
           if (!result) return;
           editResults.push({ success: true, message: result });
@@ -215,7 +212,7 @@ export class AddQuestionsAnswersComponent {
     if (!optionsToDelete?.length) return;
     const optionIdsToDelete = optionsToDelete.map(option => ({ id: option.id }));
 
-    this.dataService.deleteModule("delete_question_option", optionIdsToDelete).pipe(
+    this.dataService.deleteModule(DELETE_QUESTION_OPTION, optionIdsToDelete).pipe(
       tap((result: any) => {
         console.log(result);
       }),

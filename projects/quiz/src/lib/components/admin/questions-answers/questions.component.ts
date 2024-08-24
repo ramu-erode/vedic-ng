@@ -11,6 +11,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from "primeng/api";
 import { DataService } from "../../../services/data.service";
 import { AddQuestionsAnswersComponent } from "./add-questions-answers.component";
+import { GET_ALL_WORKSHEETS } from "../../../constants/api-module-names";
 
 @Component({
   selector: 'questions',
@@ -46,7 +47,7 @@ export class QuestionsComponent {
 
   loadWorksheets () {
     this.showLoader = true;
-    this.dataService.getAllInfo("get_all_worksheets").pipe(
+    this.dataService.getAllInfo(GET_ALL_WORKSHEETS).pipe(
       tap(result => {
         if (!result?.length) return;
         this.worksheets = result.filter(worksheet => worksheet.type === "General");
