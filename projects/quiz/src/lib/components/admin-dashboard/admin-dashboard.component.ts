@@ -12,13 +12,14 @@ import { AddQuestionsAnswersComponent } from '../admin/questions-answers/add-que
 import { WorksheetsComponent } from '../admin/worksheets/worksheets.component';
 import { QuestionsComponent } from '../admin/questions-answers/questions.component';
 import { StudentTopicCompletionComponent } from '../admin/student-topic-completion/student-topic-completion.component';
+import { StudentWorksheetAssignmentComponent } from '../admin/student-worksheet-assignment/student-worksheet-assignment.component';
 
 @Component({
   selector: 'admin-dashboard',
   standalone: true,
   imports: [
     MenuModule, CreateWorksheetComponent, AddQuestionsAnswersComponent, WorksheetsComponent,
-    QuestionsComponent, StudentTopicCompletionComponent
+    QuestionsComponent, StudentTopicCompletionComponent, StudentWorksheetAssignmentComponent
   ],
   providers: [UserStore],
   templateUrl: './admin-dashboard.component.html',
@@ -31,6 +32,7 @@ export class AdminDashboard {
   worksheets = WORKSHEETS;
   questionsAnswers = QUESTIONS_AND_ANSWERS;
   studentTopicCompletion = STUDENT_TOPIC_COMPLETION;
+  studentWorksheetAssignment = STUDENT_WORKSHEET_ASSIGNMENT;
 
   constructor() {
   }
@@ -54,8 +56,12 @@ export class AdminDashboard {
         label: this.questionsAnswers,
         command: (event) => this.loadAdminModule(event)
       },
-      { label: STUDENT_WORKSHEET_ASSIGNMENT }
+      {
+        label: this.studentWorksheetAssignment,
+        command: (event) => this.loadAdminModule(event)
+      }
     ]
+    this.selectedMenu.set(this.adminTabs?.[4]);
   }
 
   loadAdminModule (event: MenuItemCommandEvent) {

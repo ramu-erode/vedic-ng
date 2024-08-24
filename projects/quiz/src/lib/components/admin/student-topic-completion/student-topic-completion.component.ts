@@ -31,9 +31,7 @@ export class StudentTopicCompletionComponent {
   students: Student[] = [];
   selectedStudentId = signal<number>(-1);
   selectedStudent: Student | null = null;
-  showTopicCompletionModal: boolean = false;
   pendingTopics: StudentTopic[] = [];
-  clonedProducts: { [s: number]: StudentTopic } = {};
 
   constructor(
     private dataService: DataService,
@@ -83,16 +81,13 @@ export class StudentTopicCompletionComponent {
     ).subscribe()
   }
 
-  showTopicModal () {
-    this.showTopicCompletionModal = true;
-  }
-
   markTopicsAsComplete () {
     const dataToSave = this.pendingTopics.filter(topic => !!topic.completion_date)
       .map(topic => {
         const { id, name, completion_date: completionDate, ...rest } = topic;
         return { ...rest, completion_date: formatDate(completionDate || new Date(), "YYYY-MM-dd", "en-US") };
       })
+    if (!dataToSave?.length) return;
     this.showLoader = true;
     this.dataService.addModule(ADD_STUDNET_TOPIC, dataToSave).pipe(
       tap((result: any) => {
@@ -116,22 +111,5 @@ export class StudentTopicCompletionComponent {
         this.getPendingTopicForStudent();
       })
     ).subscribe();
-  }
-
-  onRowEditInit(topic: StudentTopic) {
-    this.clonedProducts[topic.id as number] = { ...topic };
-  }
-
-  onRowEditSave(topic: StudentTopic) {
-      if (topic.completion_date) {
-          delete this.clonedProducts[topic.id as number];
-      } else {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid Price' });
-      }
-  }
-
-  onRowEditCancel(topic: StudentTopic, index: number) {
-      this.pendingTopics[index] = this.clonedProducts[topic.id as number];
-      delete this.clonedProducts[topic.id as number];
   }
 }

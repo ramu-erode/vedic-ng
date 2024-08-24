@@ -87,3 +87,15 @@ export interface StudentTopic {
     id: number;
     name?: string;
 }
+
+export interface StudentWorksheet {
+    id: number;
+    student_id: number;
+    worksheet_id: number;
+    assigned_date: Date | null;
+    status: string;
+    start_time?: Date;
+    end_time?: Date;
+    duration_seconds?: number;
+    name?: string;
+}
