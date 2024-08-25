@@ -33,25 +33,9 @@ export class UserStore {
     private authService: AuthenticationService,
 
   ) {
-    this.whatsappNumber = this.authService.getLoggedInUserNumber();
-    if (!this.whatsappNumber) return;
-    this.dataService.getUserProfile(this.whatsappNumber).pipe(
-      tap(result => {
-        if (!result?.length) return;
-        this.#user.set(JSON.parse(result[0]) as Profile);
-      }),
-      catchError(error => {
-        console.error('Error in getUserProfile: ', error.message);
-        throw error;
-      }),
-      takeUntilDestroyed(this.#destroyRef)
-    ).subscribe();
-    console.log("User details loaded");
-
     effect(() => {
       if (!this.#user()) return;
       this.#isAdmin.set(this.#user()?.role_id === 1);
-
       this.#userMenu.set([{
         label: 'Admin Dashboard',
         path: '/admin-dashboard',
@@ -67,9 +51,28 @@ export class UserStore {
         label: 'Logout',
         path: '/login',
         command: () => {
-          this.router.navigate(['/login']);
+          this.authService.logout();
         }
       }]);
+      if (this.#isAdmin()) this.router.navigate(['/admin-dashboard']);
+      else this.router.navigate(['/worksheets']);
     }, { allowSignalWrites: true })
+  }
+
+  setUserProfile (loggedInNumber: string) {
+    this.whatsappNumber = loggedInNumber;
+    if (!this.whatsappNumber) return;
+    this.dataService.getUserProfile(this.whatsappNumber).pipe(
+      tap(result => {
+        if (!result?.length) return;
+        this.#user.set(JSON.parse(result[0]) as Profile);
+      }),
+      catchError(error => {
+        console.error('Error in getUserProfile: ', error.message);
+        throw error;
+      }),
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe();
+    console.log("User details loaded");
   }
 }

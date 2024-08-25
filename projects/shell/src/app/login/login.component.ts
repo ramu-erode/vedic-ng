@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Message } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { catchError, tap } from 'rxjs';
+import { UserStore } from '../services/user.store';
 
 @Component({
   selector: 'vedic-shell-login',
@@ -18,10 +19,11 @@ import { catchError, tap } from 'rxjs';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  userStore = inject(UserStore);
   whatsappNumber: string = "";
   messages: Message[] = [];
 
-  constructor (private authService: AuthenticationService, private router: Router) {
+  constructor (private authService: AuthenticationService) {
   }
 
   onSubmit () {
@@ -33,7 +35,7 @@ export class LoginComponent {
           this.messages = [{ severity: 'error', detail: 'Login failed' }];
           return;
         }
-        this.router.navigate(['/admin-dashboard']);
+        this.userStore.setUserProfile(this.whatsappNumber);
       }),
       catchError(error => {
         console.error(`Error when logging in: ${error.message}`);

@@ -32,14 +32,14 @@ export class DataService {
     }
     
     getQuizzes() {
-        return this.getRequest<Quiz[]>(`${this.baseUrl}/quizzes`);
+        return this.getRequest<Quiz[]>(`${this.baseUrl}/worksheets`);
     }
 
     getQuiz(id: number) {
         return this.getRequest<{
             questions: Question[],
             answers: Answer[]
-        }>(`${this.baseUrl}/quiz/${id}`)
+        }>(`${this.baseUrl}/worksheet/${id}`)
     }
 
     getAllInfo (module: string) {

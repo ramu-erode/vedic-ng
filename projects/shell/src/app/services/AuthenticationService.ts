@@ -20,6 +20,9 @@ export class AuthenticationService {
   }
 
   login<T>(whatsappNumber: string) {
+    /* getUserProfile() is used for both authentication and authorization for time being.
+    In future, when a proper authentication service is in place, we will replace the getUserProfile()
+    here with that proper function. */
     return this.dataService.getUserProfile(whatsappNumber).pipe(
       tap(result => {
         if (!result?.length || result[0] === "") {
