@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Message } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthenticationService } from '../services/AuthenticationService';
-import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { catchError, tap } from 'rxjs';
@@ -22,6 +21,7 @@ export class LoginComponent {
   userStore = inject(UserStore);
   whatsappNumber: string = "";
   messages: Message[] = [];
+
 
   constructor (private authService: AuthenticationService) {
   }

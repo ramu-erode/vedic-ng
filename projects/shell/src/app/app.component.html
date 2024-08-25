@@ -1,22 +1,26 @@
-<header>
-  <div class="logo">
-    <img id="logo" src="logo.png" alt="Vedic Mathematics" (click)="gotoHome()" />
-    <span>Vedic Mathematics</span>
+@if (showHeaderFooter) {
+  <header>
+    <div class="logo">
+      <img id="logo" src="logo.png" alt="Vedic Mathematics" (click)="gotoHome()" />
+      <span>Vedic Mathematics</span>
+    </div>
+    <div>
+      <p-inputSwitch
+        [ngModel]="isDarkMode"
+        (ngModelChange)="toggleLightDark()"
+      />
+      <div class="card flex justify-content-center ml-2">
+        <p-menu #menu [model]="userStore.userMenu()" [popup]="true" />
+        <p-button (onClick)="menu.toggle($event)" icon="pi pi-user" [rounded]="true" />
+    </div>
+    </div>
+  </header>
+  <div class="main-content">
+    <router-outlet />
   </div>
-  <div>
-    <p-inputSwitch
-      [ngModel]="isDarkMode"
-      (ngModelChange)="toggleLightDark()"
-    />
-    <div class="card flex justify-content-center ml-2">
-      <p-menu #menu [model]="userStore.userMenu()" [popup]="true" />
-      <p-button (onClick)="menu.toggle($event)" icon="pi pi-user" [rounded]="true" />
-  </div>
-  </div>
-</header>
-<div class="main-content">
+  <footer>
+    <span>&#64;2024 vedicmathss.com</span>
+  </footer>
+} @else {
   <router-outlet />
-</div>
-<footer>
-  <span>&#64;2024 vedicmathss.com</span>
-</footer>
+}

@@ -1,7 +1,6 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { DOCUMENT, Location } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -21,8 +20,12 @@ export class AppComponent {
   #document = inject(DOCUMENT);
   userStore = inject(UserStore);
   isDarkMode = false;
+  showHeaderFooter: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private location: Location) {
+    this.location.onUrlChange(url => {
+      this.showHeaderFooter = !["/login", "/signup"].includes(url);
+    });
   }
 
   toggleLightDark() {

@@ -1,9 +1,24 @@
 <div>
-  <h2>Register New User</h2>
+  <h2>Sign up User</h2>
+  <p-messages [(value)]="messages" [enableService]="false" />
   <form (ngSubmit)="onSubmit()">
-    <label for="whatsapp">Whatsapp Number:</label>
-    <input pInputText id="whatsapp" [(ngModel)]="whatsappNumber" name="whatsapp" required>
+    <div class="control-container">
+      <label for="name">Full Name:</label>
+      <input pInputText id="name" [(ngModel)]="name" name="name" required>
+    </div>
+    <div class="control-container">
+      <label for="whatsapp">Whatsapp Number:</label>
+      <input pInputText id="whatsapp" [(ngModel)]="whatsappNumber" name="whatsapp" required>
+    </div>
+    <div class="control-container">
+      <p-checkbox
+        inputId="isAdmin"
+        [binary]="true"
+        (onChange)="setIsAdmin($event)"
+        label="Is Admin User"
+      />
+    </div>
     <p-button label="Sign up" type="submit" />
   </form>
-  <a href="/login">Login</a>
+  <a href="/login">Already have an account? Login</a>
 </div>

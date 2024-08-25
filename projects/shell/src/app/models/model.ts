@@ -1,8 +1,8 @@
 export interface Profile {
   id: number;
   name: string;
-  whats_app_no: string,
-  role_id: number
+  whats_app_no: string;
+  role_id: 1 | 2;
   is_active: 0 | 1;
 }
 

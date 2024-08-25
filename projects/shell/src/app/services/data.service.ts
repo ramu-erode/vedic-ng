@@ -32,4 +32,26 @@ export class DataService {
             })
         );
     }
+
+    addModule (module: string, payload: any) {
+        return this.postRequest(
+            `${this.fastApiUrl}/add?module=${module}`,
+            {
+                module,
+                json_request: payload
+            }
+        );
+    }
+
+    private postRequest(url: string, payload: any = null) {
+        const request = new HttpRequest("POST", url, payload);
+        return this.http.request(request).pipe(
+            map(event => {
+                if(event.type == HttpEventType.Response && event.status === 200) {
+                    return event.body;
+                }
+                return null;
+            })
+        )
+    }
 }

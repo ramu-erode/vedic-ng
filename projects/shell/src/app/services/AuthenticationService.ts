@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ADD_PROFILE } from '../../../../quiz/src/lib/constants/api-module-names';
+import { Profile } from '@vedic/shell';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  private isAuthenticated = false;
   private whatsappNumber: string = "";
 
   constructor(
@@ -14,9 +15,7 @@ export class AuthenticationService {
   ) {
     const lsWhatsapp = localStorage.getItem("authenticatedUser");
     if (!lsWhatsapp) return;
-
     this.whatsappNumber = lsWhatsapp;
-    this.isAuthenticated = true;
   }
 
   login<T>(whatsappNumber: string) {
@@ -26,10 +25,8 @@ export class AuthenticationService {
     return this.dataService.getUserProfile(whatsappNumber).pipe(
       tap(result => {
         if (!result?.length || result[0] === "") {
-          this.isAuthenticated = false;
           return null;
         }
-        this.isAuthenticated = true;
         this.whatsappNumber = whatsappNumber;
         localStorage.setItem("authenticatedUser", whatsappNumber);
         return JSON.parse(result[0]);
@@ -41,18 +38,31 @@ export class AuthenticationService {
     );  
   }
 
-  isAuthenticatedUser (): boolean {
-    if (!this.whatsappNumber) return false;
-    return this.isAuthenticated;
+  signup (profile: { name: string, whats_app_no: string, is_active: 0 | 1, role_id: 1 | 2 }) {
+    return this.dataService.addModule(ADD_PROFILE, [profile]).pipe(
+      tap(result => {
+        if (!result) {
+          return null;
+        }
+        this.whatsappNumber = profile.whats_app_no;
+        localStorage.setItem("authenticatedUser", profile.whats_app_no);
+        return result;
+      }),
+      catchError(error => {
+        console.error('Error in getUserProfile: ', error.message);
+        throw error;
+      }),
+    );  
   }
 
-  getLoggedInUserNumber () {
-    return this.whatsappNumber;
+  isAuthenticatedUser (): boolean {
+    const lsWhatsapp = localStorage.getItem("authenticatedUser");
+    if (!lsWhatsapp) return false;
+    return true;
   }
 
   logout() {
     localStorage.removeItem("authenticatedUser");
-    this.isAuthenticated = false;
     this.router.navigate(['/login']);
   }
 }

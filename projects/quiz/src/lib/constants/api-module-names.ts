@@ -6,6 +6,7 @@ export const GET_ALL_TOPICS = "get_all_topics";
 export const GET_UNASSIGNED_WORKSHEETS = "get_unassigned_worksheets_to_assign";
 
 /* ADD */
+export const ADD_PROFILE = "add_profile";
 export const ADD_STUDNET_TOPIC = "add_student_topic";
 export const ADD_GENERAL_QUESTION = "add_general_question";
 export const ADD_WORKSHEET = "add_worksheet";
