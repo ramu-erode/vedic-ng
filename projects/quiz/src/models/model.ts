@@ -6,6 +6,26 @@ export interface GeneralQuestion {
     general_question_options?: GeneralQuestionOption[]
 }
 
+export interface QRDivisionQuestion {
+    worksheet_id: number;
+    id: number;
+    content: string;
+    quotient: string;
+    reminder: string;
+    type: string;
+}
+
+export interface QRDivisionResult {
+    student_worksheet_id: number;
+    id: number;
+    qr_question_id: number;
+    quotient_provided: string;
+    reminder_provided: string;
+    is_quotient_correct: 0 | 1;
+    is_reminder_correct: 0 | 1;
+    duration_seconds: number;
+}
+
 export interface GeneralQuestionOption {
     id: number;
     general_question_id: number;
@@ -35,6 +55,7 @@ export interface Worksheet {
     table_of: string | null;
     is_practice: 0 | 1;
     GeneralQuestions?: GeneralQuestion[];
+    QR_Division_Questions?: QRDivisionQuestion[],
     student_worksheet_id?: number;
 }
 

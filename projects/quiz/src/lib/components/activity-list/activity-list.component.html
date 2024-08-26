@@ -20,6 +20,17 @@
                         </a>
                     </td>
                 }
+                @case (activityTypes.QRDivision) {
+                    <td>{{ worksheet.name }}</td>
+                    <td>
+                        <a
+                            [routerLink]="['/worksheet', worksheet.id]"
+                            [state]="{ studentWorksheetId: worksheet.student_worksheet_id, studentId: worksheet.student_id, assignedDate: worksheet.assigned_date, worksheetId: worksheet.id }"
+                        >
+                            Take
+                        </a>
+                    </td>
+                }
                 @case (activityTypes.TABLE) {
                     <td>Table of {{ worksheet.table_of }}</td>
                     <td><a href="/table/{{worksheet.table_of}}">Take</a></td>

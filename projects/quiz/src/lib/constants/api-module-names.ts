@@ -14,6 +14,7 @@ export const ADD_GENERAL_QUESTION = "add_general_question";
 export const ADD_WORKSHEET = "add_worksheet";
 export const ADD_STUDENT_WORKSHEET = "add_student_worksheet";
 export const ADD_GENERAL_QUESTION_RESULT = "add_general_question_result";
+export const ADD_QR_QUESTION_RESULT = "add_qr_question_result";
 
 /* DELETE */
 export const DELETE_QUESTION_OPTION = "delete_question_option";

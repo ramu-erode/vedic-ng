@@ -1,17 +1,18 @@
 import { computed, DestroyRef, effect, inject, Injectable, Signal, signal, untracked } from "@angular/core";
-import { EditFields, GeneralQuestion, GeneralQuestionOption, StudentWorksheet, Worksheet } from "../../models/model";
+import isEqual from "lodash/isEqual";
+import { EditFields, GeneralQuestion, GeneralQuestionOption, QRDivisionQuestion, StudentWorksheet, Worksheet } from "../../models/model";
 import { DataService } from "./data.service";
 import { catchError, finalize, interval, takeWhile, tap } from "rxjs";
 import map from 'lodash/map';
 import findIndex from 'lodash/findIndex';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { getTimeTaken } from "../utilities/datetime";
-import { ADD_GENERAL_QUESTION_RESULT, B4_EDIT_STUDENT_WORKSHEET_BY_ID, EDIT_STUDENT_WORKSHEET } from "../constants/api-module-names";
-import { getJSONToUpdate } from "../utilities/format-data";
+import { ADD_GENERAL_QUESTION_RESULT, ADD_QR_QUESTION_RESULT, B4_EDIT_STUDENT_WORKSHEET_BY_ID, EDIT_STUDENT_WORKSHEET } from "../constants/api-module-names";
+import { getJSONFormatValue, getJSONToUpdate } from "../utilities/format-data";
 import { formatDate } from "@angular/common";
-
+import { ActivityTypes } from "../constants/activity-types";
 export interface QuestionItem {
-    question: GeneralQuestion;
+    question: GeneralQuestion | QRDivisionQuestion;
     answers: GeneralQuestionOption[];
     givenAnswer?: string | Array<string>;
     startTime: Date;
@@ -43,6 +44,7 @@ export class QuizStore {
     worksheetId = this.#worksheetId.asReadonly();
 
     #studentWorksheet: StudentWorksheet | null = null;
+    #worksheet: Worksheet | null = null;
 
     setStudentWorksheet (values: any) {
         this.#studentWorksheet = {
@@ -58,9 +60,9 @@ export class QuizStore {
         this.#worksheetId.set(id);
     }
 
-    #questions = signal<GeneralQuestion[]>([]);
+    #questions = signal<GeneralQuestion[] | QRDivisionQuestion[]>([]);
 
-    #questionItems = signal<QuestionItem[]>([]);
+    #questionItems = signal<any[]>([]);
     questionItems = this.#questionItems.asReadonly();
 
     #currentQuestionItem = signal<QuestionItem | null>(null);
@@ -88,14 +90,18 @@ export class QuizStore {
         effect(() => {
             const questions = this.#questions();
             const result = map(questions, question => {
-                const currentQuestionAnswers = (question.general_question_options)?.map(option => {
-                    if (typeof option === "string" && !!option) return JSON.parse(option);
-                    return option;
-                }) || [];
-                const correctAnswers = currentQuestionAnswers.filter(ans => {
+                let currentQuestionAnswers = [];
+                let correctAnswers = [];
+                if (this.#worksheet?.type === ActivityTypes.GENERAL) {
+                    currentQuestionAnswers = getJSONFormatValue((question as GeneralQuestion).general_question_options || []);
+                    correctAnswers = currentQuestionAnswers.filter(ans => {
                         if (!ans) return false;
                         return (ans as GeneralQuestionOption).is_correct === 1;
                     });
+                } else if (this.#worksheet?.type === ActivityTypes.QRDivision) {
+                    currentQuestionAnswers = [(question as QRDivisionQuestion).quotient, (question as QRDivisionQuestion).reminder];
+                    correctAnswers = currentQuestionAnswers.map(answer => ({ content: answer }));
+                }
                 return {
                     question: question,
                     answers: currentQuestionAnswers,
@@ -104,8 +110,8 @@ export class QuizStore {
                     isCompleted: false,
                     isCorrect: false,
                     correctAnswer: correctAnswers.length === 1
-                        ? (correctAnswers[0] as GeneralQuestionOption).content
-                        : correctAnswers.map(ans => (ans as GeneralQuestionOption).content)
+                        ? correctAnswers[0].content
+                        : correctAnswers.map(ans => ans.content)
                 }
             });
             untracked(() => {
@@ -125,10 +131,15 @@ export class QuizStore {
 
     private loadQuiz(id: number) {
         console.log("Load quiz is called");
-        this.dataService.getWorksheetById(1).pipe(
+        this.dataService.getWorksheetById(this.#worksheetId()).pipe(
             tap((result) => {
                 if (result == null) return;
-                this.#questions.set((result as Worksheet).GeneralQuestions || []);
+                this.#worksheet = result as Worksheet;
+                if (this.#worksheet.type === ActivityTypes.GENERAL) {
+                    this.#questions.set(this.#worksheet.GeneralQuestions || []);
+                } else if (this.#worksheet.type === ActivityTypes.QRDivision) {
+                    this.#questions.set(getJSONFormatValue(this.#worksheet.QR_Division_Questions || []));
+                }
             }),
             catchError(error => {
                 console.error('Error in getQuiz: ', error.message);
@@ -245,27 +256,45 @@ export class QuizStore {
     }
 
     private saveStudentAnswers () {
-        const answersToSubmit = this.#questionItems().map(question => {
-            return {
-                student_worksheet_id: this.#studentWorksheet?.id,
-                general_question_id: question.question.id,
-                answer_provided: question.givenAnswer,
-                is_correct: question.isCorrect,
-                duration_seconds: question.timeTakenInMs
-                    ? Math.floor(question.timeTakenInMs / 1000) : 0
-            }
-        })
-        if (!answersToSubmit?.length) return;
-
-        this.dataService.addModule(ADD_GENERAL_QUESTION_RESULT, answersToSubmit).pipe(
+        let answersToSubmit: any = [];
+        let moduleName = "";
+        if (this.#worksheet?.type === ActivityTypes.GENERAL) {
+            moduleName = ADD_GENERAL_QUESTION_RESULT;
+            answersToSubmit = this.#questionItems().map(question => {
+                return {
+                    student_worksheet_id: this.#studentWorksheet?.id,
+                    general_question_id: question.question.id,
+                    answer_provided: question.givenAnswer,
+                    is_correct: question.isCorrect,
+                    duration_seconds: question.timeTakenInMs
+                        ? Math.floor(question.timeTakenInMs / 1000) : 0
+                }
+            });
+        } else if (this.#worksheet?.type === ActivityTypes.QRDivision) {
+            moduleName = ADD_QR_QUESTION_RESULT;
+            answersToSubmit = this.#questionItems().map(question => {
+                return {
+                    student_worksheet_id: this.#studentWorksheet?.id,
+                    qr_question_id: question.question.id,
+                    quotient_provided: question.givenAnswer[0],
+                    reminder_provided: question.givenAnswer[1],
+                    is_quotient_correct: question.givenAnswer[0] === question.correctAnswer[0] ? 1 : 0,
+                    is_reminder_correct: question.givenAnswer[1] === question.correctAnswer[1] ? 1 : 0,
+                    duration_seconds: question.timeTakenInMs
+                        ? Math.floor(question.timeTakenInMs / 1000) : 0
+                }
+            });
+        }
+        if (!answersToSubmit?.length) return;    
+        this.dataService.addModule(moduleName, answersToSubmit).pipe(
             tap((result: any) => {
                 if (!result) return null;
                 return result;
-              }),
-              catchError(error => {
+                }),
+                catchError(error => {
                 console.error(`Error when adding worksheet: ${error.message}`);
                 throw error;
-              })
+                })
         ).subscribe();
     }
 
@@ -327,9 +356,14 @@ export class QuizStore {
         const { correctAnswer } = question || {};
         if (typeof studentAnswer === 'string') return correctAnswer === studentAnswer;
         if (!correctAnswer?.length) return;
-        const isCorrect = (correctAnswer as Array<string>).every((ans: string) => {
-            return studentAnswer.includes(ans);
-        });
-        return isCorrect;
+        if (this.#worksheet?.type === ActivityTypes.GENERAL) {
+            const isCorrect = (correctAnswer as Array<string>).every((ans: string) => {
+                return studentAnswer.includes(ans);
+            });
+            return isCorrect;
+        } else if (this.#worksheet?.type === ActivityTypes.QRDivision) {
+            return isEqual(correctAnswer, studentAnswer);
+        }
+        return false;        
     }
 }

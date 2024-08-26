@@ -23,9 +23,7 @@ export class QuotientReminderComponent {
   }
 
   ngOnChanges () {
-    if (!this.currentQuestion?.givenAnswer) return
-
-    this.quotient.set((this.currentQuestion.givenAnswer as Array<string>)?.[0] || "");
-    this.reminder.set((this.currentQuestion.givenAnswer as Array<string>)?.[1] || "");
+    this.quotient.set((this.currentQuestion?.givenAnswer as Array<string>)?.[0] || "");
+    this.reminder.set((this.currentQuestion?.givenAnswer as Array<string>)?.[1] || "");
   }
 }

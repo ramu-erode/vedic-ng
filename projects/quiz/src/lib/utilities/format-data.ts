@@ -29,3 +29,11 @@ export function getJSONFormatOptions (question: GeneralQuestion) {
   }
   return options.map(option => option ? JSON.parse(option as any) : option);
 }
+
+export function getJSONFormatValue<T>(values: T[]) {
+  if (!values?.length) return []
+  return values.map(value => {
+    if (typeof value === "string" && !!value) return JSON.parse(value);
+    return value;
+  })
+}
