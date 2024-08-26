@@ -33,6 +33,7 @@ export class UserStore {
     private authService: AuthenticationService,
 
   ) {
+    this.loginUser();
     effect(() => {
       if (!this.#user()) return;
       this.#isAdmin.set(this.#user()?.role_id === 1);
@@ -74,5 +75,23 @@ export class UserStore {
       takeUntilDestroyed(this.#destroyRef)
     ).subscribe();
     console.log("User details loaded");
+  }
+
+  loginUser () {
+    const whatsappNumber = this.authService.getStoredContactNumber();
+    if (!whatsappNumber) return this.authService.logout();
+
+    this.authService.login(whatsappNumber).pipe(
+      tap(result => { 
+        if (!result) {
+          return;
+        }
+        this.setUserProfile(whatsappNumber);
+      }),
+      catchError(error => {
+        console.error(`Error when logging in: ${error.message}`);
+        throw error;
+      })
+    ).subscribe();
   }
 }

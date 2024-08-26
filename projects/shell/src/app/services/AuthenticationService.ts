@@ -3,7 +3,7 @@ import { DataService } from './data.service';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ADD_PROFILE } from '../../../../quiz/src/lib/constants/api-module-names';
-import { Profile } from '@vedic/shell';
+import { Profile, UserStore } from '@vedic/shell';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -16,6 +16,10 @@ export class AuthenticationService {
     const lsWhatsapp = localStorage.getItem("authenticatedUser");
     if (!lsWhatsapp) return;
     this.whatsappNumber = lsWhatsapp;
+  }
+
+  getStoredContactNumber () {
+    return this.whatsappNumber;
   }
 
   login<T>(whatsappNumber: string) {
