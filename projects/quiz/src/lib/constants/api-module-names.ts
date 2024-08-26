@@ -4,6 +4,7 @@ export const GET_ALL_WORKSHEETS = "get_all_worksheets";
 export const GET_ALL_ACTIVE_STUDENTS = "get_all_active_students";
 export const GET_ALL_TOPICS = "get_all_topics";
 export const GET_UNASSIGNED_WORKSHEETS = "get_unassigned_worksheets_to_assign";
+export const GET_PRACTICE_WORKSHEETS = "get_practicse_worksheets";
 
 /* ADD */
 export const ADD_PROFILE = "add_profile";

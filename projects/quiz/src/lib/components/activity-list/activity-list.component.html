@@ -1,20 +1,20 @@
-<p-table [value]="quizzes()" [tableStyle]="{'max-width': '60rem'}">
+<p-table [value]="worksheets" [tableStyle]="{'max-width': '60rem'}">
     <ng-template pTemplate="header">
         <tr>
             <th>Title</th>
             <th>Action</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-quiz>
+    <ng-template pTemplate="body" let-worksheet>
         <tr>
-            @switch(quiz.type) {
-                @case (activityTypes.QUIZ) {
-                    <td>{{ quiz.title }}</td>
-                    <td><a href="/quiz/{{quiz.id}}">Take</a></td>
+            @switch(worksheet.type) {
+                @case (activityTypes.GENERAL) {
+                    <td>{{ worksheet.name }}</td>
+                    <td><a href="/worksheet/{{worksheet.id}}">Take</a></td>
                 }
-                @case (activityTypes.DODGING_TABLE) {
-                    <td>Table of {{ quiz.tableOfNumber }}</td>
-                    <td><a href="/table/{{quiz.tableOfNumber}}">Take</a></td>
+                @case (activityTypes.TABLE) {
+                    <td>Table of {{ worksheet.table_of }}</td>
+                    <td><a href="/table/{{worksheet.table_of}}">Take</a></td>
                 }
             }
         </tr>
