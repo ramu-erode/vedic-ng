@@ -1,16 +1,18 @@
 import { computed, DestroyRef, effect, inject, Injectable, Signal, signal, untracked } from "@angular/core";
-import { Answer, Question } from "../../models/model";
+import { EditFields, GeneralQuestion, GeneralQuestionOption, StudentWorksheet, Worksheet } from "../../models/model";
 import { DataService } from "./data.service";
-import { catchError, interval, takeWhile, tap } from "rxjs";
+import { catchError, finalize, interval, takeWhile, tap } from "rxjs";
 import map from 'lodash/map';
-import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { getTimeTaken } from "../utilities/datetime";
+import { ADD_GENERAL_QUESTION_RESULT, B4_EDIT_STUDENT_WORKSHEET_BY_ID, EDIT_STUDENT_WORKSHEET } from "../constants/api-module-names";
+import { getJSONToUpdate } from "../utilities/format-data";
+import { formatDate } from "@angular/common";
 
 export interface QuestionItem {
-    question: Question;
-    answers: Answer[];
+    question: GeneralQuestion;
+    answers: GeneralQuestionOption[];
     givenAnswer?: string | Array<string>;
     startTime: Date;
     endTime: Date;
@@ -34,16 +36,29 @@ export interface QuizResult {
 export class QuizStore {
     #destroyRef = inject(DestroyRef);
 
-    #quizId = signal(0);
-    quizId = this.#quizId.asReadonly();
+    #isSavingResult = signal<boolean>(false);
+    isSavingResult = this.#isSavingResult.asReadonly();
 
-    setQuizId(id: number) {
-        this.#quizId.set(id);
+    #worksheetId = signal(0);
+    worksheetId = this.#worksheetId.asReadonly();
+
+    #studentWorksheet: StudentWorksheet | null = null;
+
+    setStudentWorksheet (values: any) {
+        this.#studentWorksheet = {
+            id: values.studentWorksheetId,
+            student_id: values.studentId,
+            worksheet_id: values.worksheetId,
+            assigned_date: formatDate(new Date(values.assignedDate) || new Date(), "YYYY-MM-dd", "en-US"),
+            status: ""
+        };
     }
 
-    #questions = signal<Question[]>([]);
-    #answers = signal<Answer[]>([]);
+    setWorksheetId(id: number) {
+        this.#worksheetId.set(id);
+    }
 
+    #questions = signal<GeneralQuestion[]>([]);
 
     #questionItems = signal<QuestionItem[]>([]);
     questionItems = this.#questionItems.asReadonly();
@@ -65,17 +80,22 @@ export class QuizStore {
 
     constructor(private dataService: DataService) {
         effect(() => {
-            const id = this.#quizId();
+            const id = this.#worksheetId();
             if (id === 0) return;
             this.loadQuiz(id);
         });
 
         effect(() => {
             const questions = this.#questions();
-            const answers = this.#answers();
             const result = map(questions, question => {
-                const currentQuestionAnswers = filter(answers, answer => answer.questionId === question.id);
-                const correctAnswers = currentQuestionAnswers.filter(ans => ans.isCorrect);
+                const currentQuestionAnswers = (question.general_question_options)?.map(option => {
+                    if (typeof option === "string" && !!option) return JSON.parse(option);
+                    return option;
+                }) || [];
+                const correctAnswers = currentQuestionAnswers.filter(ans => {
+                        if (!ans) return false;
+                        return (ans as GeneralQuestionOption).is_correct === 1;
+                    });
                 return {
                     question: question,
                     answers: currentQuestionAnswers,
@@ -84,7 +104,8 @@ export class QuizStore {
                     isCompleted: false,
                     isCorrect: false,
                     correctAnswer: correctAnswers.length === 1
-                        ? correctAnswers[0].content : correctAnswers.map(ans => ans.content)
+                        ? (correctAnswers[0] as GeneralQuestionOption).content
+                        : correctAnswers.map(ans => (ans as GeneralQuestionOption).content)
                 }
             });
             untracked(() => {
@@ -104,11 +125,10 @@ export class QuizStore {
 
     private loadQuiz(id: number) {
         console.log("Load quiz is called");
-        this.dataService.getQuiz(id).pipe(
-            tap(result => {
+        this.dataService.getWorksheetById(1).pipe(
+            tap((result) => {
                 if (result == null) return;
-                this.#questions.set(result.questions);
-                this.#answers.set(result.answers);
+                this.#questions.set((result as Worksheet).GeneralQuestions || []);
             }),
             catchError(error => {
                 console.error('Error in getQuiz: ', error.message);
@@ -131,7 +151,6 @@ export class QuizStore {
     }
 
     start() {
-        console.log("Start is called");
         this.#index.set(0);
         if (this.#questionItems().length <= 0) return;
         const qi = this.#questionItems()[0];
@@ -156,8 +175,8 @@ export class QuizStore {
         this.updateCurrentQuestion();
 
         if (this.#index() === this.#questionItems().length) {
-            this.complete();
-            this.updateFinalResult();
+            this.#isSavingResult.set(true);
+            this.submitFinalResults();
             return;
         }
 
@@ -181,6 +200,7 @@ export class QuizStore {
     }
 
     complete() {
+        this.#isSavingResult.set(false);
         this.#completed.set(true);
     }
 
@@ -207,7 +227,7 @@ export class QuizStore {
         });
     }
 
-    private updateFinalResult() {
+    private submitFinalResults () {
         let correctAnswers = this.#questionItems()?.filter(question => question.isCorrect).length;
         let numberOfQuestions = this.#questionItems()?.length;
         let startTime = this.#finalResult()?.startTime?.getTime() || 0;
@@ -220,6 +240,67 @@ export class QuizStore {
             totalScore: `${correctAnswers}/${numberOfQuestions}`,
             timeTaken: getTimeTaken(endTime - startTime)
         }));
+        this.upateWorksheetWithFinalResult();
+        this.saveStudentAnswers();
+    }
+
+    private saveStudentAnswers () {
+        const answersToSubmit = this.#questionItems().map(question => {
+            return {
+                student_worksheet_id: this.#studentWorksheet?.id,
+                general_question_id: question.question.id,
+                answer_provided: question.givenAnswer,
+                is_correct: question.isCorrect,
+                duration_seconds: question.timeTakenInMs
+                    ? Math.floor(question.timeTakenInMs / 1000) : 0
+            }
+        })
+        if (!answersToSubmit?.length) return;
+
+        this.dataService.addModule(ADD_GENERAL_QUESTION_RESULT, answersToSubmit).pipe(
+            tap((result: any) => {
+                if (!result) return null;
+                return result;
+              }),
+              catchError(error => {
+                console.error(`Error when adding worksheet: ${error.message}`);
+                throw error;
+              })
+        ).subscribe();
+    }
+
+    private upateWorksheetWithFinalResult () {
+        this.dataService.getDataForEdit(B4_EDIT_STUDENT_WORKSHEET_BY_ID, this.#studentWorksheet?.id || 0).pipe(
+            tap(result => {
+                if (!result || !this.#studentWorksheet) return;
+                this.#studentWorksheet.status = "Completed";
+                let startTime = this.#finalResult()?.startTime;
+                let endTime = this.#currentQuestionItem()?.endTime;
+                this.#studentWorksheet.start_time = formatDate(startTime || new Date(), "YYYY-MM-dd hh:mm:ss", "en-US") || undefined;
+                this.#studentWorksheet.end_time = formatDate(endTime || new Date(), "YYYY-MM-dd hh:mm:ss", "en-US") || undefined;
+                this.#studentWorksheet.duration_seconds = endTime && startTime
+                    ? Math.floor((endTime.getTime() - startTime.getTime()) / 1000) : 0;
+                const updatedJson = getJSONToUpdate(result as EditFields[], this.#studentWorksheet)
+                this.editWorksheet(updatedJson);
+              }),
+              catchError(error => {
+                console.error(`Error when fetching question to edit: ${error.message}`);
+                throw error;
+              })
+        ).subscribe();
+    }
+
+    private editWorksheet (updatedJson: EditFields[]) {
+        this.dataService.editData(EDIT_STUDENT_WORKSHEET, updatedJson).pipe(
+            tap((result: any) => {
+              return result;
+            }),
+            catchError(error => {
+              console.error(`Error when updating student worksheet: ${error.message}`);
+              throw error;
+            }),
+            finalize(() => this.complete())
+          ).subscribe();
     }
 
     private setEndTime () {

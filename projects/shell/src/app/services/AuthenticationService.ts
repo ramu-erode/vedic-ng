@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ADD_PROFILE } from '../../../../quiz/src/lib/constants/api-module-names';
-import { Profile, UserStore } from '@vedic/shell';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -27,7 +26,7 @@ export class AuthenticationService {
     In future, when a proper authentication service is in place, we will replace the getUserProfile()
     here with that proper function. */
     return this.dataService.getUserProfile(whatsappNumber).pipe(
-      tap(result => {
+      map(result => {
         if (!result?.length || result[0] === "") {
           return null;
         }
@@ -38,7 +37,7 @@ export class AuthenticationService {
       catchError(error => {
         console.error('Error in getUserProfile: ', error.message);
         throw error;
-      }),
+      })
     );  
   }
 

@@ -19,13 +19,13 @@ export class TextBlankComponent {
   constructor () {
     effect(() => {
         let answer = this.currentAnswer();
-        if (answer === "") return;
+        if (!answer) return;
         this.setAnswer.emit(answer);
     }, { allowSignalWrites: true })
   }
 
   ngOnChanges () {
-    if (!this.currentQuestion?.givenAnswer) return
+    if (!this.currentQuestion) return
 
     this.currentAnswer.set(this.currentQuestion.givenAnswer as string);
   }

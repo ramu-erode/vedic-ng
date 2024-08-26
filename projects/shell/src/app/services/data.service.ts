@@ -10,14 +10,14 @@ export class DataService {
     private http = inject(HttpClient);
 
     constructor(
-        @Inject("FASTAPI_BASE_URL") private fastApiUrl: string
+        @Inject("SERVICE_BASE_URL") private baseUrl: string
     ) {
 
     }
 
     getUserProfile(whatsappNumber: string) {
         return this.getRequest<string[]>(
-            `${this.fastApiUrl}/get_data_like?module=get_profile_for_whats_app_no&id=${encodeURIComponent(whatsappNumber)}`
+            `${this.baseUrl}/get_data_like?module=get_profile_for_whats_app_no&id=${encodeURIComponent(whatsappNumber)}`
         );
     }
 
@@ -35,7 +35,7 @@ export class DataService {
 
     addModule (module: string, payload: any) {
         return this.postRequest(
-            `${this.fastApiUrl}/add?module=${module}`,
+            `${this.baseUrl}/add?module=${module}`,
             {
                 module,
                 json_request: payload

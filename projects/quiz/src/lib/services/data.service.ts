@@ -1,6 +1,6 @@
-import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from "@angular/common/http";
+import { HttpClient, HttpEventType, HttpRequest } from "@angular/common/http";
 import { Inject, inject, Injectable } from "@angular/core";
-import { Answer, GeneralQuestionOption, Question, Quiz } from "../../models/model";
+import { GeneralQuestionOption, Worksheet } from "../../models/model";
 import { map, tap } from "rxjs";
 
 @Injectable({
@@ -11,15 +11,14 @@ export class DataService {
     private http = inject(HttpClient);
 
     constructor(
-        @Inject("SERVICE_BASE_URL") private baseUrl: string,
-        @Inject("FASTAPI_BASE_URL") private fastApiUrl: string
+        @Inject("SERVICE_BASE_URL") private baseUrl: string
     ) {
 
     }
 
     getDataForId (module: string, id: number) {
         const result = this.getRequest<string[]>(
-            `${this.fastApiUrl}/get_data_for_id?module=${module}&id=${id}`
+            `${this.baseUrl}/get_data_for_id?module=${module}&id=${id}`
         );
         if (result === null) return result;
 
@@ -30,20 +29,9 @@ export class DataService {
             })
         );        
     }
-    
-    getQuizzes() {
-        return this.getRequest<Quiz[]>(`${this.baseUrl}/worksheets`);
-    }
-
-    getQuiz(id: number) {
-        return this.getRequest<{
-            questions: Question[],
-            answers: Answer[]
-        }>(`${this.baseUrl}/worksheet/${id}`)
-    }
 
     getAllInfo (module: string) {
-        const result = this.getRequest<string[]>(`${this.fastApiUrl}/GetAllInfo?module=${module}`);
+        const result = this.getRequest<string[]>(`${this.baseUrl}/GetAllInfo?module=${module}`);
         if (!result) return result;
         return result.pipe(
             map(items => {
@@ -54,9 +42,9 @@ export class DataService {
     }
 
     getWorksheetById (worksheetId: number) {
-        const result = this.getRequest(`${this.fastApiUrl}/worksheet/${worksheetId}`);
+        const result = this.getRequest<Worksheet>(`${this.baseUrl}/worksheet/${worksheetId}`);
         if (!result) return result;
-        return result.pipe(tap(items => items));   
+        return result.pipe(tap(items => items));
     }
 
     addAnswerOptions (options: GeneralQuestionOption[]) {
@@ -65,7 +53,7 @@ export class DataService {
             return rest;
         })
         return this.postRequest(
-            `${this.fastApiUrl}/add?module=add_question_option`,
+            `${this.baseUrl}/add?module=add_question_option`,
             {
                 module: "add_question_option",
                 json_request: optionsWithoutId
@@ -75,7 +63,7 @@ export class DataService {
 
     addModule (module: string, payload: any) {
         return this.postRequest(
-            `${this.fastApiUrl}/add?module=${module}`,
+            `${this.baseUrl}/add?module=${module}`,
             {
                 module,
                 json_request: payload
@@ -85,7 +73,7 @@ export class DataService {
 
     deleteModule (module: string, payload: any) {
         return this.deleteRequest(
-            `${this.fastApiUrl}/delete?module=${module}`,
+            `${this.baseUrl}/delete?module=${module}`,
             {
                 module,
                 json_request: payload
@@ -95,7 +83,7 @@ export class DataService {
 
     getDataForEdit (module: string, id: number) {
         return this.postRequest(
-            `${this.fastApiUrl}/data_for_edit?module=${module}`,
+            `${this.baseUrl}/data_for_edit?module=${module}`,
             {
                 module,
                 json_request: { id }
@@ -105,7 +93,7 @@ export class DataService {
 
     editData (module: string, payload: any) {
         return this.postRequest(
-            `${this.fastApiUrl}/edit?module=${module}`,
+            `${this.baseUrl}/edit?module=${module}`,
             {
                 module,
                 json_request: payload

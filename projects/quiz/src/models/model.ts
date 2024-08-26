@@ -1,21 +1,9 @@
-export interface Quiz {
-    id: number;
-    title: string;
-}
-
-export interface Question {
-    id: number;
-    quizId: number;
-    content: string;
-    type: string
-}
-
 export interface GeneralQuestion {
     worksheet_id: number;
     id: number;
     content: string;
     type: string;
-    general_question_options?: GeneralQuestionOption[] | string[]
+    general_question_options?: GeneralQuestionOption[]
 }
 
 export interface GeneralQuestionOption {
@@ -24,13 +12,6 @@ export interface GeneralQuestionOption {
     content: string;
     is_correct: 0 | 1;
     canDelete?: boolean;
-}
-
-export interface Answer {
-    id: number;
-    questionId: number;
-    content: string;
-    isCorrect: boolean;
 }
 
 export interface DodgingTableRow {
@@ -53,6 +34,8 @@ export interface Worksheet {
     type: string;
     table_of: string | null;
     is_practice: 0 | 1;
+    GeneralQuestions?: GeneralQuestion[];
+    student_worksheet_id?: number;
 }
 
 export interface EditFields {
@@ -74,10 +57,10 @@ export interface StudentWorksheet {
     id: number;
     student_id: number;
     worksheet_id: number;
-    assigned_date: Date | null;
+    assigned_date: Date | string | null;
     status: string;
-    start_time?: Date;
-    end_time?: Date;
+    start_time?: Date | string;
+    end_time?: Date | string;
     duration_seconds?: number;
     name?: string;
 }

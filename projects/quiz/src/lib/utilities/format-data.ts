@@ -19,7 +19,7 @@ export function getJSONToUpdate (editFormatData: EditFields[], updatedData: any)
 
 export function getJSONFormatOptions (question: GeneralQuestion) {
   const { general_question_options: options } = question || {};
-  if (!options?.length || options[0] === "") {
+  if (!options?.length || (options as any)[0] === "") {
     return [{
       id: -1,
       general_question_id: question.id,
@@ -27,5 +27,5 @@ export function getJSONFormatOptions (question: GeneralQuestion) {
       is_correct: question.type === QuestionTypes.GENERAL ? 1 : 0
     }];
   }
-  return options.map(option => option ? JSON.parse(option as string) : option);
+  return options.map(option => option ? JSON.parse(option as any) : option);
 }

@@ -13,11 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     {
       provide: "SERVICE_BASE_URL",
-      useValue: isDevMode() ? "http://localhost:3000" : "http://vedicmathss.com/vedic-api"
-    },
-    {
-      provide: "FASTAPI_BASE_URL",
-      useValue: "http://127.0.0.1:8000"
+      useValue: isDevMode() ? "http://127.0.0.1:8000" : "http://vedicmathss.com/vedic-api"
     }
   ],
 

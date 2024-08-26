@@ -1,4 +1,4 @@
-import { DestroyRef, effect, inject, Injectable, signal } from "@angular/core";
+import { DestroyRef, effect, inject, Injectable, signal, untracked } from "@angular/core";
 import { catchError, tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../services/AuthenticationService";
@@ -33,7 +33,7 @@ export class UserStore {
     private authService: AuthenticationService,
 
   ) {
-    this.loginUser();
+    if (!this.#user()) this.loginUser();
     effect(() => {
       if (!this.#user()) return;
       this.#isAdmin.set(this.#user()?.role_id === 1);
@@ -47,7 +47,10 @@ export class UserStore {
       }, {
         label: 'Student Dashboard',
         path: '/quizzes',
-        visible: !this.#isAdmin()
+        visible: !this.#isAdmin(),
+        command: () => {
+          this.router.navigate(['/worksheets']);
+        }
       }, {
         label: 'Logout',
         path: '/login',
@@ -55,8 +58,6 @@ export class UserStore {
           this.authService.logout();
         }
       }]);
-      if (this.#isAdmin()) this.router.navigate(['/admin-dashboard']);
-      else this.router.navigate(['/worksheets']);
     }, { allowSignalWrites: true })
   }
 

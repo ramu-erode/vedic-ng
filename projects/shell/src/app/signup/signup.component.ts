@@ -61,14 +61,14 @@ export class SignupComponent {
     this.authService.signup(profile).pipe(
       tap(result => { 
         if (!result) {
-          this.messages = [{ severity: 'error', detail: 'Login failed' }];
+          this.messages = [{ severity: 'error', detail: 'Signup failed' }];
           return;
         }
         this.userStore.setUserProfile(this.whatsappNumber);
       }),
       catchError(error => {
-        console.error(`Error when logging in: ${error.message}`);
-        this.messages = [{ severity: 'error', detail: 'Login failed' }];
+        console.error(`Error when signing up: ${error.message}`);
+        this.messages = [{ severity: 'error', detail: 'Signup failed' }];
         throw error;
       })
     ).subscribe();

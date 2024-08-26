@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import findIndex from 'lodash/findIndex';
 import { tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { CommonModule } from "@angular/common";
+import { CommonModule, LocationStrategy } from "@angular/common";
 import { ButtonModule } from 'primeng/button';
 import { QuestionTypes } from "../../constants/question-types";
 import { MultipleChoiceCheckboxComponent } from "../multiple-choice-checkbox/multiple-choice-checkbox.component";
@@ -13,6 +13,7 @@ import { TextBlankComponent } from "../text-blank/text-blank.component";
 import { QuizSummaryComponent } from "../quiz-summary/quiz-summary.component";
 import { QuotientReminderComponent } from "../quotient-reminder/quotient-reminder.component";
 import { QuestionPanelComponent } from "../question-panel/question-panel.component";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
     selector: 'vedic-quiz',
@@ -20,7 +21,7 @@ import { QuestionPanelComponent } from "../question-panel/question-panel.compone
     imports: [
     ButtonModule, CommonModule, MultipleChoiceRadioComponent,
     MultipleChoiceCheckboxComponent, QuizSummaryComponent, TextBlankComponent,
-    QuotientReminderComponent,
+    QuotientReminderComponent, ProgressSpinnerModule,
     QuestionPanelComponent
 ],
     providers: [QuizStore],
@@ -39,9 +40,12 @@ export class QuizComponent {
     readonly questionType = QuestionTypes;
     showSummary = signal(false);
 
-    constructor() {
+    constructor(private location: LocationStrategy) {
         this.route.params.pipe(
-            tap(params => this.quizStore.setQuizId(params["id"])),
+            tap(params => {
+                this.quizStore.setWorksheetId(params["id"]);
+                this.quizStore.setStudentWorksheet(this.location.getState());
+            }),
             takeUntilDestroyed()
         ).subscribe();
 

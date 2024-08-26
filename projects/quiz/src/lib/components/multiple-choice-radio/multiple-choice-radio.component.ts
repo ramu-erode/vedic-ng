@@ -17,9 +17,9 @@ export class MultipleChoiceRadioComponent {
 
   constructor () {
     effect(() => {
-        let answer = this.currentAnswer();
-        if (answer === "") return;
-        this.setAnswer.emit(answer);
+      let answer = this.currentAnswer();
+      if (answer === "") return;
+      this.setAnswer.emit(answer);
     }, { allowSignalWrites: true })
   }
 

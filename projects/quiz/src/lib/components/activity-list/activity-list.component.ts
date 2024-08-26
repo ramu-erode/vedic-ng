@@ -1,21 +1,22 @@
 import { Component, effect } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DataService } from '../../services/data.service';
-import { Quiz, Worksheet } from '../../../models/model';
+import { Worksheet } from '../../../models/model';
 import { ActivityTypes } from '../../constants/activity-types';
 import { catchError, tap } from 'rxjs';
-import { GET_PRACTICE_WORKSHEETS } from '../../constants/api-module-names';
+import { GET_ASSIGNED_WORKSHEETS_FOR_STUDENT, GET_PRACTICE_WORKSHEETS } from '../../constants/api-module-names';
 import { UserStore } from '@vedic/shell';
 
 @Component({
     selector: 'vedic-activity-list',
     standalone: true,
-    imports: [RouterOutlet, TableModule],
+    imports: [RouterOutlet, TableModule, RouterLink],
     templateUrl: './activity-list.component.html'
 })
 export class QuizListComponent {
-    worksheets: Worksheet[] = [];
+    assignedWorksheets: Worksheet[] = [];
+    practiceWorksheets: Worksheet[] = [];
     readonly activityTypes = ActivityTypes;
 
     constructor(private dataService: DataService, private userStore: UserStore) {
@@ -26,10 +27,20 @@ export class QuizListComponent {
             this.dataService.getDataForId(GET_PRACTICE_WORKSHEETS, studentId).pipe(
                 tap(items => {
                     if (items === null) return;
-                    this.worksheets = items;
+                    this.practiceWorksheets = items;
                 }),
                 catchError(error => {
-                    console.error('Error in getQuizzes: ', error.message);
+                    console.error('Error in getPracticeWorksheets: ', error.message);
+                    throw error;
+                })
+            ).subscribe();
+            this.dataService.getDataForId(GET_ASSIGNED_WORKSHEETS_FOR_STUDENT, studentId).pipe(
+                tap(items => {
+                    if (items === null) return;
+                    this.assignedWorksheets = items;
+                }),
+                catchError(error => {
+                    console.error('Error in getAssignedWorksheets: ', error.message);
                     throw error;
                 })
             ).subscribe();

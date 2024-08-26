@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { catchError, tap } from 'rxjs';
 import { UserStore } from '../services/user.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'vedic-shell-login',
@@ -23,25 +24,26 @@ export class LoginComponent {
   messages: Message[] = [];
 
 
-  constructor (private authService: AuthenticationService) {
+  constructor (private authService: AuthenticationService, private router: Router) {
   }
 
   onSubmit () {
     if (!this.whatsappNumber) return;
 
     this.authService.login(this.whatsappNumber).pipe(
-      tap(result => { 
-        if (!result) {
-          this.messages = [{ severity: 'error', detail: 'Login failed' }];
-          return;
-        }
-        this.userStore.setUserProfile(this.whatsappNumber);
-      }),
       catchError(error => {
         console.error(`Error when logging in: ${error.message}`);
         this.messages = [{ severity: 'error', detail: 'Login failed' }];
         throw error;
       })
-    ).subscribe();
+    ).subscribe(result => {
+      if (!result) {
+        this.messages = [{ severity: 'error', detail: 'Login failed' }];
+        return;
+      }
+      if (result?.role_id === 1) this.router.navigate(['/admin-dashboard']);
+      else this.router.navigate(['/worksheets']);
+      this.userStore.setUserProfile(this.whatsappNumber);
+    });
   }
 }
