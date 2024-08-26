@@ -80,7 +80,7 @@ export class UserStore {
 
   loginUser () {
     const whatsappNumber = this.authService.getStoredContactNumber();
-    if (!whatsappNumber) return this.authService.logout();
+    if (!whatsappNumber) return;
 
     this.authService.login(whatsappNumber).pipe(
       tap(result => { 

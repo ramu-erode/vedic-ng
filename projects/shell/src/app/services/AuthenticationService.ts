@@ -43,7 +43,7 @@ export class AuthenticationService {
 
   signup (profile: { name: string, whats_app_no: string, is_active: 0 | 1, role_id: 1 | 2 }) {
     return this.dataService.addModule(ADD_PROFILE, [profile]).pipe(
-      tap(result => {
+      map(result => {
         if (!result) {
           return null;
         }

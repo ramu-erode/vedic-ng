@@ -59,18 +59,19 @@ export class SignupComponent {
       role_id: this.roleId
     }
     this.authService.signup(profile).pipe(
-      tap(result => { 
-        if (!result) {
-          this.messages = [{ severity: 'error', detail: 'Signup failed' }];
-          return;
-        }
-        this.userStore.setUserProfile(this.whatsappNumber);
-      }),
       catchError(error => {
         console.error(`Error when signing up: ${error.message}`);
         this.messages = [{ severity: 'error', detail: 'Signup failed' }];
         throw error;
       })
-    ).subscribe();
+    ).subscribe(result => {
+      if (!result) {
+        this.messages = [{ severity: 'error', detail: 'Login failed' }];
+        return;
+      }
+      if (profile.role_id === 1) this.router.navigate(['/admin-dashboard']);
+      else this.router.navigate(['/worksheets']);
+      this.userStore.setUserProfile(this.whatsappNumber);
+    });
   }
 }
