@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { QuizListComponent, TableComponent, AdminDashboard, QuizComponent, HomeComponent } from '@vedic/quiz';
+import { QuizListComponent, TableComponent, AdminDashboard, QuizComponent, HomeComponent, StudentsComponent } from '@vedic/quiz';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AuthGuard } from './guards/auth.guard';
@@ -23,6 +23,9 @@ export const routes: Routes = [
     },
     {
         path: 'worksheets', component: QuizListComponent, canActivate: [AuthGuard]
+    },
+    {
+        path: 'students', component: StudentsComponent, canActivate: [AuthGuard]
     },
     {
         path: 'worksheet/:id', component: QuizComponent, canActivate: [AuthGuard]

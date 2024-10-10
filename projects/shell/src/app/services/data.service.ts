@@ -16,9 +16,25 @@ export class DataService {
     }
 
     getUserProfile(whatsappNumber: string) {
-        return this.getRequest<string[]>(
-            `${this.baseUrl}/get_data_like?module=get_profile_for_whats_app_no&id=${encodeURIComponent(whatsappNumber)}`
+        return this.getDataLike("get_profile_for_whats_app_no", whatsappNumber);
+    }
+
+    getStudentsForProfile(profileId: string) {
+        return this.getDataLike("get_students_for_profile_id", profileId);
+    }
+
+    private getDataLike(module: string, id: string) {
+        const result = this.getRequest<string[]>(
+            `${this.baseUrl}/get_data_like?module=${module}&id=${encodeURIComponent(id)}`
         );
+        if (result === null) return result;
+
+        return result.pipe(
+            map(items => {
+                if (!items) return null;
+                else return (items as string[]).map((row: string) => JSON.parse(row));
+            })
+        );  
     }
 
     private getRequest<T>(url: string, payload: any = null) {
