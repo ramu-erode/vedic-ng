@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Playball&display=swap');
 header {
-  height: 65px;
+  height: 100px;/*65px*/
   display: flex;
   align-items: center;
   padding: 20px;
-  background-color: var(--header-footer-bg-color);
+  background-color: #0249a9;/*var(--header-footer-bg-color)*/
   font-size: 26px;
 
   div {
@@ -27,9 +28,11 @@ footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: var(--header-footer-bg-color);
-  padding: 10px 15px;
-  font-size: 12px;
+  background-color: #0249a9;/*var(--header-footer-bg-color)*/
+  padding: 15px 15px;/*10px 15px*/
+  font-size: 16px;/*12px*/
+  color: #fff;
+  text-align: center;
 }
 
 img {
@@ -38,11 +41,22 @@ img {
   margin-right: 12px;
   cursor: pointer;
 }
-
+.logo img {
+  width: 90px;
+  height: auto;
+}
+.logo span {
+  color: #fff;
+  font-family: "Playball", serif;
+}
+div#pn_id_3.p-menu {
+  position: sticky;
+  top: 0;
+}
 @media screen and (max-width: 576px) {
   header {
     padding: 15px;
-    background-color: var(--header-footer-bg-color);
+    background-color: #0249a9;/*var(--header-footer-bg-color)*/
     font-size: 18px;
   }
 }
