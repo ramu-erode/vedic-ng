@@ -1,0 +1,21 @@
+<div class="card flex">
+  <p-menu [model]="adminTabs" />
+</div>
+@if (selectedMenu()) {
+  <div id="content" class="content">
+    @switch (selectedMenu()!.label) {
+      @case (studentTopicCompletion) {
+        <student-topic-completion />
+      }
+      @case (worksheets) {
+        <worksheets />
+      }
+      @case (questionsAnswers) {
+        <questions />
+      }
+      @case (studentWorksheetAssignment) {
+        <student-worksheet-assignment />
+      }
+    }
+  </div>
+}

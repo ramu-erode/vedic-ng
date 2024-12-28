@@ -1,0 +1,40 @@
+<div class="control-container">
+  <label for="content">Question content</label>
+  <input pInputText id="content" [(ngModel)]="question.content" />
+</div>
+<div class="control-container">
+  <label for="type">Type</label>
+  <p-dropdown
+    inputId="type"
+    [options]="types"
+    placeholder="Select a type"
+    [style]="{'width': '250px'}"
+    [(ngModel)]="question.type"
+    (onChange)="typeChangeHandler()"
+  />
+</div>
+@if (selectedQuestion) {
+  @switch (question.type) {
+    @case (questionTypes.GENERAL) {
+      <general-question-option [option]="generalQuestionOptions[0]" />
+    }
+    @case (questionTypes.RADIO) {
+      <general-question-option
+        *ngFor="let option of generalQuestionOptions; index as i;"
+        [option]="option"
+        optionLabel="Option {{i + 1}} content"
+        (removeOption)="removeOption($event)"
+        [showRemoveOption]="true"
+      />
+    }
+  }
+  @if (question.type === questionTypes.RADIO) {
+    <p class="add-option" (click)="addAnswerOption()">+ Add Option</p>
+  }
+}
+<div class="buttons">
+  <p-button label="Reset" (click)="resetValues()" severity="secondary" />
+  <p-button
+    [label]="question.id === -1 ? 'Add' : 'Update'"
+    (click)="question.id === -1 ? addQuestion() : updateQuestion()" />
+</div>

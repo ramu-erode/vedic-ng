@@ -1,0 +1,40 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  margin-bottom: 8px;
+  font-size: 32px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.summary {
+  display: flex;
+  margin-bottom: 24px;
+
+  p {
+    margin-bottom: 0;
+    font-size: 18px;
+
+    span {
+      font-size: 24px;
+    }
+  }
+
+  p:first-child {
+    margin-right: 64px;
+  }
+}
+
+p-table {
+    max-width: 90vw;
+}
+
+@media screen and (max-width: 576px) {
+  .summary {
+    flex-direction: column;
+  }
+}

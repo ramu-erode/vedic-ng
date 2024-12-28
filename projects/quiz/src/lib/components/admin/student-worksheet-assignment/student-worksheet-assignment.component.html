@@ -1,0 +1,40 @@
+<p-toast />
+@if (showLoader) {
+  <div class="card flex justify-content-center">
+    <p-progressSpinner styleClass="w-3rem h-3rem" />
+  </div>
+} @else {
+  <h3>Student Worksheet Assignment</h3>
+  <div class="control-container">
+    <p-dropdown
+      inputId="student"
+      [options]="students"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Select a student"
+      [style]="{'width': '250px'}"
+      [(ngModel)]="selectedStudentId"
+    />
+  </div>
+  @if (unassignedWorksheets.length) {
+    <p-table [value]="unassignedWorksheets" [(selection)]="selectedWorksheets" dataKey="id" [tableStyle]="{'margin-bottom': '24px'}">
+      <ng-template pTemplate="header">
+        <tr>
+            <th>
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th>Name</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-worksheet let-ri="rowIndex">
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="worksheet"></p-tableCheckbox>
+            </td>
+            <td>{{worksheet.name}}</td>
+          </tr>
+      </ng-template>
+    </p-table>
+    <p-button label="Assign Worksheets" (click)="assignWorksheets()" />
+  }
+}

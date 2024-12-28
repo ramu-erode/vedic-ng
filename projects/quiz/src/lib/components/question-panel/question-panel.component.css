@@ -1,0 +1,41 @@
+:host {
+  max-width: 260px;
+  padding: 16px;
+  background-color: var(--question-panel-bg-color);
+}
+
+h4 {
+  margin-block-start: 0;
+  margin-block-end: 24px;
+}
+
+.large-screen-content {
+  display: block;
+}
+
+.questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+p-button {
+  display: none;
+}
+
+@media screen and (max-width: 576px) {
+  :host {
+    background-color: transparent;
+  }
+
+  .large-screen-content {
+    display: none;
+  }
+
+  p-button {
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 35%;
+  }
+}

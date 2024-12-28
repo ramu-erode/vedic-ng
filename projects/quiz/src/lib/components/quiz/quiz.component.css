@@ -1,0 +1,54 @@
+:host {
+  width: 100%;
+}
+
+.main {
+  display: flex;
+}
+
+.main > div:first-child {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.quiz-container {
+  display: flex;
+  flex-direction: column;  
+}
+
+.header {
+  display: flex;
+
+  p {
+    margin-bottom: 0;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  
+  p:first-child {
+    flex: 1;
+  }
+
+  p:last-child {
+    margin-left: 24px;
+  }
+}
+
+hr {
+  margin-block-start: 24px;
+  margin-block-end: 24px;
+  width: 100%;
+}
+
+.question {
+  margin-bottom: 24px;
+}
+
+.buttons {
+  margin-top: 24px;
+
+  p-button:first-child {
+    margin-right: 16px;
+  }
+}

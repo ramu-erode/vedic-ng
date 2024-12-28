@@ -1,0 +1,8 @@
+:host {
+  min-width: 350px;
+  padding-bottom: 64px;
+}
+
+.control-container {
+  margin-bottom: 24px;
+}

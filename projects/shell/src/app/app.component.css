@@ -1,0 +1,48 @@
+header {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--header-footer-bg-color);
+  font-size: 26px;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+
+  div:first-child {
+    flex: 1;
+  }
+}
+
+.main-content {
+  display: flex;
+  padding: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--header-footer-bg-color);
+  padding: 10px 15px;
+  font-size: 12px;
+}
+
+img {
+  width: 35px;
+  height: 35px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 576px) {
+  header {
+    padding: 15px;
+    background-color: var(--header-footer-bg-color);
+    font-size: 18px;
+  }
+}
