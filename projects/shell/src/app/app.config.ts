@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     {
       provide: "SERVICE_BASE_URL",
-      useValue: isDevMode() ? "http://127.0.0.1:8000" : "http://vedicmathss.com/vedic-api"
+      useValue: isDevMode() ? "http://127.0.0.1:8000" : "http://speedmaths.online:8000"
     }
   ],
 
