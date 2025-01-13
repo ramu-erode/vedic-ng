@@ -70,7 +70,7 @@ export class SignupComponent {
         return;
       }
       if (profile.role_id === 1) this.router.navigate(['/admin-dashboard']);
-      else this.router.navigate(['/worksheets']);
+      else this.router.navigate(['/students']);
       this.userStore.setUserProfile(this.whatsappNumber);
     });
   }

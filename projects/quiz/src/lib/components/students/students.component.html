@@ -1,0 +1,23 @@
+<h3>Students</h3>
+@if (students.length) {
+  <p-table [value]="students" [tableStyle]="{'max-width': '60rem'}">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>Date of birth</th>
+            <th>Class</th>
+            <th>Class in year</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-student>
+        <tr>
+          <td><a href="#" (click)="openWorksheets($event, student)">{{ student.name }}</a></td>
+          <td>{{ student.date_of_birth | date: "mediumDate" }}</td>
+          <td>{{ student.class }}</td>
+          <td>{{ student.class_in_year }}</td>
+        </tr>
+    </ng-template>
+  </p-table>
+} @else {
+  <p class="error">Request Admin to add one or more students to your profile</p>
+}

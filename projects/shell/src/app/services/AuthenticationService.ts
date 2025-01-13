@@ -32,7 +32,7 @@ export class AuthenticationService {
         }
         this.whatsappNumber = whatsappNumber;
         localStorage.setItem("authenticatedUser", whatsappNumber);
-        return JSON.parse(result[0]);
+        return result[0];
       }),
       catchError(error => {
         console.error('Error in getUserProfile: ', error.message);

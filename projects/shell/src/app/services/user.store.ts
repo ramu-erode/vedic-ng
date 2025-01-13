@@ -12,7 +12,7 @@ import { Router } from "@angular/router";
 export class UserStore {
   #destroyRef = inject(DestroyRef);
   whatsappNumber: string = "";
-  #user = signal<Profile | null>(null);
+  #user = signal<Profile | Student | null>(null);
   user = this.#user.asReadonly();
 
   #isAdmin = signal<boolean>(false);
@@ -36,7 +36,7 @@ export class UserStore {
     if (!this.#user()) this.loginUser();
     effect(() => {
       if (!this.#user()) return;
-      this.#isAdmin.set(this.#user()?.role_id === 1);
+      this.#isAdmin.set((this.#user() as Profile)?.role_id === 1);
       this.#userMenu.set([{
         label: 'Admin Dashboard',
         path: '/admin-dashboard',
@@ -46,10 +46,10 @@ export class UserStore {
         }
       }, {
         label: 'Student Dashboard',
-        path: '/quizzes',
+        path: '/students',
         visible: !this.#isAdmin(),
         command: () => {
-          this.router.navigate(['/worksheets']);
+          this.router.navigate(['/students']);
         }
       }, {
         label: 'Logout',
@@ -67,7 +67,22 @@ export class UserStore {
     this.dataService.getUserProfile(this.whatsappNumber).pipe(
       tap(result => {
         if (!result?.length) return;
-        this.#user.set(JSON.parse(result[0]) as Profile);
+
+        const profile = result[0] as Profile;
+        if (!profile) return;
+        this.#user.set(profile);
+        if (profile.role_id === 1) return;
+        
+        this.dataService.getStudentsForProfile(String(profile.id)).pipe(
+          tap(result => {
+            if (!result?.length) return;
+            this.#students.set(result);
+          }),
+          catchError(error => {
+            console.error('Error in getStudentsForProfile: ', error.message);
+            throw error;
+          })
+        ).subscribe();
       }),
       catchError(error => {
         console.error('Error in getUserProfile: ', error.message);
@@ -94,5 +109,9 @@ export class UserStore {
         throw error;
       })
     ).subscribe();
+  }
+
+  setUser (user: Profile | Student) {
+    this.#user.set(user || null);
   }
 }
